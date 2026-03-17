@@ -1,0 +1,25 @@
+{
+  "name": "sc2207-database",
+  "version": "1.0.0",
+  "description": "This repository contains the materials for the SC2207 Database and SQL course lab.",
+  "homepage": "https://github.com/AIPEAC/SC2207-Database#readme",
+  "bugs": {
+    "url": "https://github.com/AIPEAC/SC2207-Database/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AIPEAC/SC2207-Database.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "insert": "node script/index"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "sequelize": "^6.37.8",
+    "tedious": "^19.2.1"
+  }
+}
