@@ -1,11 +1,9 @@
 function randomDate(start, end) {
     const startTimestamp = start.getTime(); 
     const endTimestamp = end.getTime();     
-    const timeDifference = endTimestamp - startTimestamp;
+    const randomTime = randomNumber(startTimestamp, endTimestamp);
     
-    const randomTime = Math.random() * timeDifference;
-    
-    return new Date(startTimestamp + randomTime); 
+    return new Date(randomTime); 
 }
 
 function randomDefaultDate(){
@@ -16,7 +14,24 @@ function randomDefaultDate(){
     return randomDate(now, fiveYearsAgo);
 }
 
+function randomNumber(start, end){
+    const diff = end - start;
+    return start + Math.random() * diff; 
+}
+
+function randomInt(start, end){
+    return Math.floor(randomNumber(start, end));
+}
+
+function randomElement(arr){
+    const index = randomInt(0, arr.length);
+    return arr[index];
+}
+
 module.exports = {
     randomDate,
-    randomDefaultDate
+    randomDefaultDate,
+    randomNumber,
+    randomInt,
+    randomElement,
 }

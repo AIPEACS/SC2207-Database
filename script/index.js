@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
 const { sequelize } = require("./init")
+
 const { insertClient } = require("./insert/insertClient");
+const { insertProduct } = require("./insert/insertProduct");
+
 const { rl, question } = require("./cli");
 
 const inserts = {
     Client: insertClient,
+    Product: insertProduct,
 }
 
 async function main(){
@@ -39,4 +43,4 @@ async function main(){
     })
 }
 
-main()
+main();
