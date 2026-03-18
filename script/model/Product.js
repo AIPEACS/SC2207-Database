@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require('../init');
+const { faker } = require("@faker-js/faker");
+const { randomNumber, randomElement } = require("../util")
 
 const Product = sequelize.define('Product', {
     productID: {
@@ -43,6 +45,28 @@ const Product = sequelize.define('Product', {
     createdAt: false,
     updatedAt: false,
 });
+
+const priceRatioRange = [1.05, 1.3];
+const dimRanges = [[1, 10], [10, 50], [50, 100]];
+
+function generateRecord(){
+    const cost = faker.commerce.price();
+    const price = Math.round(cost * randomNumber(...priceRatioRange) * 100) / 100;
+    const dimRange = randomElement(dimRanges);
+
+    return {
+        name: faker.commerce.productName(),
+        brand: faker.company.name(),
+        cost: cost,
+        price: price,
+        category: faker.commerce.department(),
+        length: randomNumber(...dimRange),
+        width: randomNumber(...dimRange),
+        height: randomNumber(...dimRange),
+    };
+}
+
+Product.generateRecord = generateRecord;
 
 module.exports = {
     Product

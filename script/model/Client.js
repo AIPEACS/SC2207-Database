@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require('../init');
+const { faker } = require("@faker-js/faker");
+const { randomDefaultDate, randomElement } = require("../util")
 
 const serviceTier = ['bronze', 'silver', 'gold', 'platinum'];
 
@@ -29,5 +31,17 @@ const Client = sequelize.define('Client', {
     updatedAt: false,
 });
 
-exports.serviceTier = serviceTier;
-exports.Client = Client;
+function generateRecord(){
+    return {
+        companyName: faker.company.name(),
+        serviceTier: randomElement(serviceTier),
+        startDate: randomDefaultDate(),
+        contactPerson: faker.person.fullName(),
+    }
+}
+
+Client.generateRecord = generateRecord;
+
+module.exports = {
+    Client
+};

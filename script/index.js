@@ -2,25 +2,27 @@
 
 const { sequelize } = require("./init")
 
-const { insertClient } = require("./insert/insertClient");
-const { insertProduct } = require("./insert/insertProduct");
+const { insert } = require("./insert");
+const { Client } = require("./model/Client");
+const { Product } = require("./model/Product");
 
 const { rl, question } = require("./cli");
 
-const inserts = {
-    Client: insertClient,
-    Product: insertProduct,
+const models = {
+    Client,
+    Product,
 }
 
 async function main(){
-    const tables = Object.keys(inserts);
+    const tables = Object.keys(models);
     console.log(`All Table: ${tables.join(", ")}`);
 
-    let insert = null;
-    while(insert == null){
-        const table = await question(`Enter table name: `);
-        insert = inserts[table];
-        if(insert == null) console.error(`Table '${table}' doesn't exists`);
+    let name = null
+    let model = null;
+    while(model == null){
+        name = await question(`Enter table name: `);
+        model = models[name];
+        if(model == null) console.error(`Table '${name}' doesn't exists`);
     }
 
     let num = NaN;
@@ -32,8 +34,9 @@ async function main(){
 
     sequelize.sync()
 
-    insert(num)
+    insert(model, name, num)
     .catch((error) => {
+        console.error(`Process terminated unexpectedly: ${error}`)
         rl.close();
         process.exit(-1);
     })
