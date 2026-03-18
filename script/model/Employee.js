@@ -5,7 +5,7 @@ const { randomElement } = require("../util");
 
 const { Staff } = require("./Staff");
 const { Warehouse } = require("./Warehouse");
-const { insert } = require("../insert");
+const { createParent, assignFK } = require("../insert");
 
 const certification = ["forklift operator", "hazmat handling", null];
 
@@ -40,16 +40,8 @@ function generateRecord(){
 
 Employee.generateRecord = generateRecord;
 Employee.insertRecords = async (employees) => {
-    await insert(Staff, "Staff", employees.length);
-
-    const [staffs, _] = await sequelize.query("SELECT staffID FROM STAFF WHERE staffID NOT IN (SELECT staffID FROM EMPLOYEE)");
-    const warehouses = await Warehouse.findAll();
-
-    for(let i=0; i<employees.length; i++){
-        employees[i].staffID = staffs[i].staffID;
-        employees[i].warehouseID = randomElement(warehouses).warehouseID;
-    }
-
+    await createParent(Staff, "Staff", employees, "staffID");
+    await assignFK(Warehouse, employees, "warehouseID");
     await Employee.bulkCreate(employees);
 }
 

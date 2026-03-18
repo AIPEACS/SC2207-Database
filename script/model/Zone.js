@@ -4,7 +4,7 @@ const { sequelize } = require('../init');
 const { randomInt, randomElement } = require("../util");
 
 const { Warehouse } = require("./Warehouse");
-const { insert } = require("../insert");
+const { assignFK } = require("../insert");
 
 const code = ["receiving", "bulk storage", "picking area", "packing area", "shipping dock"];
 
@@ -44,12 +44,7 @@ function generateRecord(){
 
 Zone.generateRecord = generateRecord;
 Zone.insertRecords = async (zones) => {
-    const warehouses = await Warehouse.findAll();
-
-    for(let i=0; i<zones.length; i++){
-        zones[i].warehouseID = randomElement(warehouses).warehouseID;
-    }
-
+    await assignFK(Warehouse, zones, "warehouseID");
     await Zone.bulkCreate(zones);
 }
 

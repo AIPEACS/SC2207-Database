@@ -168,6 +168,17 @@ CREATE TABLE Employee
 );
 GO
 
+CREATE TABLE DRIVER 
+( 
+  staffID INT NOT NULL PRIMARY KEY,
+  licenseNumber VARCHAR(255) NOT NULL UNIQUE,
+  licenseExpiration DATE NOT NULL,
+  vehicleID INT,
+  FOREIGN KEY (staffID) REFERENCES Staff(staffID) ON DELETE CASCADE,
+  FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID) ON DELETE SET NULL
+);
+GO
+
 
 --Employee
 --Driver

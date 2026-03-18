@@ -4,6 +4,7 @@ const { sequelize } = require("./init")
 
 const { insert } = require("./insert");
 const { Client } = require("./model/Client");
+const { Driver } = require("./model/Driver");
 const { Product } = require("./model/Product");
 const { Warehouse } = require("./model/Warehouse");
 const { Employee } = require("./model/Employee");
@@ -14,10 +15,12 @@ const { rl, question } = require("./cli");
 
 const models = {
     Client,
+    Driver,
     Product,
-    Warehouse,
     Employee,
+
     Vehicle,
+    Warehouse,
     Zone,
 }
 
@@ -44,7 +47,7 @@ async function main(){
 
     insert(model, name, num)
     .catch((error) => {
-        console.error(`Process terminated unexpectedly: ${error}`)
+        console.error(`Process terminated unexpectedly: ${error.parent}`)
         rl.close();
         process.exit(-1);
     })
