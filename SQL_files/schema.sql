@@ -114,7 +114,7 @@ GO
 CREATE TABLE Item
 (
   itemSerial# INT IDENTITY(1,1) PRIMARY KEY,
-  productID INT NOT NULL,
+  productID INT NOT NULL UNIQUE,
   FOREIGN KEY (productID) REFERENCES Product(productID)
 );
 GO
