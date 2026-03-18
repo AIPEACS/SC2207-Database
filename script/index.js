@@ -5,10 +5,11 @@ const { sequelize } = require("./init")
 const { insert } = require("./insert");
 const { Client } = require("./model/Client");
 const { Driver } = require("./model/Driver");
-const { Product } = require("./model/Product");
-const { Warehouse } = require("./model/Warehouse");
 const { Employee } = require("./model/Employee");
+const { Product } = require("./model/Product");
+const { Supplier } = require("./model/Supplier");
 const { Vehicle } = require("./model/Vehicle");
+const { Warehouse } = require("./model/Warehouse");
 const { Zone } = require("./model/Zone");
 
 const { rl, question } = require("./cli");
@@ -16,9 +17,9 @@ const { rl, question } = require("./cli");
 const models = {
     Client,
     Driver,
-    Product,
     Employee,
-
+    Product,
+    Supplier,
     Vehicle,
     Warehouse,
     Zone,
