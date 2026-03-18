@@ -7,6 +7,7 @@ const { Client } = require("./model/Client");
 const { Product } = require("./model/Product");
 const { Warehouse } = require("./model/Warehouse");
 const { Employee } = require("./model/Employee");
+const { Vehicle } = require("./model/Vehicle");
 
 const { rl, question } = require("./cli");
 
@@ -15,6 +16,7 @@ const models = {
     Product,
     Warehouse,
     Employee,
+    Vehicle,
 }
 
 async function main(){
