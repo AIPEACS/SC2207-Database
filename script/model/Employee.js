@@ -15,7 +15,7 @@ const Employee = sequelize.define('Employee', {
         primaryKey: true, 
         references: {
             model: Staff, 
-            key: 'staffId' 
+            key: 'staffID' 
         }
     },
     certification: {

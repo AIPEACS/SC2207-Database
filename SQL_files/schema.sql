@@ -67,7 +67,7 @@ GO
 CREATE TABLE Zone
 (
   warehouseID INT NOT NULL,
-  location varchar(255) NOT NULL,
+  location INTEGER NOT NULL,
   code varchar(255) NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
   PRIMARY KEY (warehouseID, location)
