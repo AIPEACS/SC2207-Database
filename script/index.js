@@ -5,12 +5,16 @@ const { sequelize } = require("./init")
 const { insert } = require("./insert");
 const { Client } = require("./model/Client");
 const { Product } = require("./model/Product");
+const { Warehouse } = require("./model/Warehouse");
+const { Employee } = require("./model/Employee");
 
 const { rl, question } = require("./cli");
 
 const models = {
     Client,
     Product,
+    Warehouse,
+    Employee,
 }
 
 async function main(){

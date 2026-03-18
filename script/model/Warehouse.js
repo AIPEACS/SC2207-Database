@@ -45,6 +45,7 @@ function generateRecord(){
 }
 
 Warehouse.generateRecord = generateRecord;
+Warehouse.insertRecords = Warehouse.bulkCreate; 
 
 module.exports = {
     Warehouse

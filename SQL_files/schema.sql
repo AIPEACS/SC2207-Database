@@ -159,11 +159,11 @@ CREATE TABLE Staff
 GO
 
 CREATE TABLE Employee
-(
-  staffID INT NOT NULL,
-  certification varchar(255) NOT NULL,
+( 
+  staffID INT NOT NULL PRIMARY KEY,
+  certification varchar(255),
   warehouseID INT NOT NULL,
-  FOREIGN KEY (staffID) REFERENCES Staff(staffID),
+  FOREIGN KEY (staffID) REFERENCES Staff(staffID) ON DELETE CASCADE,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
 );
 GO

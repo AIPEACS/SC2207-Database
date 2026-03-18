@@ -67,6 +67,7 @@ function generateRecord(){
 }
 
 Product.generateRecord = generateRecord;
+Product.insertRecords = Product.bulkCreate;
 
 module.exports = {
     Product

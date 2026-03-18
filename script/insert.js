@@ -5,7 +5,7 @@ async function insert(model, name, number){
         records.push(model.generateRecord());
     }
 
-    await model.bulkCreate(records)
+    await model.insertRecords(records)
     .then(() => console.log(`${number} ${name} created.`))
     .catch((error) => {
         console.error(`${name} creation failed. Error: ${error}`);

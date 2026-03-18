@@ -41,6 +41,7 @@ function generateRecord(){
 }
 
 Client.generateRecord = generateRecord;
+Client.insertRecords = Client.bulkCreate;
 
 module.exports = {
     Client
