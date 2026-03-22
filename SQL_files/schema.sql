@@ -83,7 +83,7 @@ CREATE TABLE Inventory
   reservedQty INT NOT NULL,
   handQty INT NOT NULL,
   orderedQty INT NOT NULL,
-  location varchar(255) NOT NULL,
+  location INT NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
   FOREIGN KEY (productID) REFERENCES Product(productID),
   FOREIGN KEY (clientID) REFERENCES Client(clientID),
@@ -101,13 +101,13 @@ CREATE TABLE InventoryMovement
   serial# INT NOT NULL,
   movement varchar(255) NOT NULL,
   reason varchar(255) NOT NULL,
-  timestamp timestamp NOT NULL,
+  timestamp DATETIME2(7) NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
   FOREIGN KEY (productID) REFERENCES Product(productID),
   FOREIGN KEY (clientID) REFERENCES Client(clientID),
   FOREIGN KEY (warehouseID, productID, clientID, serial#)
     REFERENCES Inventory(warehouseID, productID, clientID, serial#),
-  PRIMARY KEY (warehouseID, productID, clientID, serial#, movement, reason, timestamp)
+  PRIMARY KEY (warehouseID, productID, clientID, serial#, timestamp)
 );
 GO
 

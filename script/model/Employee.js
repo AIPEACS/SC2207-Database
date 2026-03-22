@@ -41,7 +41,7 @@ function generateRecord(){
 Employee.generateRecord = generateRecord;
 Employee.insertRecords = async (employees) => {
     await createParent(Staff, "Staff", employees, "staffID");
-    await assignFK(Warehouse, employees, "warehouseID");
+    await assignFK(Warehouse, employees);
     await Employee.bulkCreate(employees);
 }
 

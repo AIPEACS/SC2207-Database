@@ -27,11 +27,15 @@ async function createParent(parentModel, parentName, records, idName){
     }
 }
 
-async function assignFK(fkModel, records, fkName) {
+async function assignFK(fkModel, records) {
+    const keys = fkModel.primaryKeyAttributes;
     const fkrecords = await fkModel.findAll();
 
     records.forEach(record => {
-        record[fkName] = randomElement(fkrecords)[fkName];
+        const fkrecord = randomElement(fkrecords);
+        keys.forEach(key => {
+            record[key] = fkrecord[key];
+        })
     });
 }
 

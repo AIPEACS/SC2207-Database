@@ -6,6 +6,8 @@ const { insert } = require("./insert");
 const { Client } = require("./model/Client");
 const { Driver } = require("./model/Driver");
 const { Employee } = require("./model/Employee");
+const { Inventory } = require("./model/Inventory");
+const { InventoryMovement } = require("./model/InventoryMovement");
 const { Item } = require("./model/Item");
 const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
@@ -20,6 +22,8 @@ const models = {
     Client,
     Driver,
     Employee,
+    Inventory,
+    InventoryMovement,
     Item,
     Product,
     ProductHandling,

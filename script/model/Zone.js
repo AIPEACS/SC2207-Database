@@ -44,7 +44,7 @@ function generateRecord(){
 
 Zone.generateRecord = generateRecord;
 Zone.insertRecords = async (zones) => {
-    await assignFK(Warehouse, zones, "warehouseID");
+    await assignFK(Warehouse, zones);
     await Zone.bulkCreate(zones);
 }
 
