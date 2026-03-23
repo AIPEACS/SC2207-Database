@@ -137,10 +137,10 @@ CREATE TABLE Shipment
 (
   shipmentID INT IDENTITY(1,1) PRIMARY KEY,
   exArrDate date NOT NULL,
-  acArrDate date NOT NULL,
-  shippedDate date NOT NULL,
+  acArrDate date,
+  shippedDate date,
   originalLocation varchar(255) NOT NULL,
-  trackingNumber INT NOT NULL,
+  trackingNumber varchar(255) UNIQUE NOT NULL,
   orderID INT NOT NULL,
   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
 );

@@ -11,7 +11,10 @@ const { InventoryMovement } = require("./model/InventoryMovement");
 const { Item } = require("./model/Item");
 const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
+const { PurchaseOrder } = require("./model/PurchaseOrder");
+const { Route } = require("./model/Route");
 const { Supplier } = require("./model/Supplier");
+const { Supply } = require("./model/Supply");
 const { Vehicle } = require("./model/Vehicle");
 const { Warehouse } = require("./model/Warehouse");
 const { Zone } = require("./model/Zone");
@@ -27,7 +30,10 @@ const models = {
     Item,
     Product,
     ProductHandling,
+    PurchaseOrder,
+    Route,
     Supplier,
+    Supply,
     Vehicle,
     Warehouse,
     Zone,
