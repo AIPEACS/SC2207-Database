@@ -1,0 +1,27 @@
+-- Drop tables in reverse dependency order to avoid FK constraint violations
+
+DROP TABLE IF EXISTS Delivery;
+DROP TABLE IF EXISTS Stop;
+DROP TABLE IF EXISTS Driver;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Shipment_Warehouse;
+DROP TABLE IF EXISTS Shipment_Supplier;
+DROP TABLE IF EXISTS ShipItem;
+DROP TABLE IF EXISTS OrderItem;
+DROP TABLE IF EXISTS Shipment;
+DROP TABLE IF EXISTS PurchaseOrder_Supplier;
+DROP TABLE IF EXISTS PurchaseOrder_Client;
+DROP TABLE IF EXISTS InventoryMovement;
+DROP TABLE IF EXISTS Inventory;
+DROP TABLE IF EXISTS Zone;
+DROP TABLE IF EXISTS Supply;
+DROP TABLE IF EXISTS ProductHandling;
+DROP TABLE IF EXISTS Item;
+DROP TABLE IF EXISTS PurchaseOrder;
+DROP TABLE IF EXISTS Route;
+DROP TABLE IF EXISTS Vehicle;
+DROP TABLE IF EXISTS Staff;
+DROP TABLE IF EXISTS Warehouse;
+DROP TABLE IF EXISTS Supplier;
+DROP TABLE IF EXISTS Product;
+DROP TABLE IF EXISTS Client;
