@@ -98,7 +98,7 @@ CREATE TABLE Warehouse
   warehouseID INT IDENTITY(1,1) PRIMARY KEY,
   address VARCHAR(255) NOT NULL,
   size DECIMAL(38, 2) NOT NULL,
-  temperature DECIMAL(4, 1) NOT NULL,
+  temperature VARCHAR(255) NOT NULL,
   security VARCHAR(255) NOT NULL
 );
 GO
