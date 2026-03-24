@@ -82,7 +82,6 @@ CREATE TABLE Inventory
   serial# INT NOT NULL,
   reservedQty INT NOT NULL,
   handQty INT NOT NULL,
-  saleQty INT NOT NULL,
   orderedQty INT NOT NULL,
   location VARCHAR(255) NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
@@ -143,6 +142,19 @@ CREATE TABLE PurchaseOrder_Supplier
   PRIMARY KEY (orderID, supplierID),
   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID),
   FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
+);
+GO
+
+CREATE TABLE OrderItem
+(
+  orderID INT NOT NULL,
+  itemSerial# INT NOT NULL,
+  exDelDate DATE NOT NULL,
+  unitPrice DECIMAL(38, 2) NOT NULL,
+  orderedQty INT NOT NULL,
+  PRIMARY KEY (orderID, itemSerial#),
+  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID),
+  FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
 );
 GO
 
@@ -241,7 +253,8 @@ CREATE TABLE Stop
 (
   routeID INT NOT NULL,
   sequence VARCHAR(255) NOT NULL,
-  actArrTime DATETIME NOT NULL,
+  estArrTime DATETIME NOT NULL,
+  actArrTime DATETIME,
   PRIMARY KEY (routeID, sequence),
   FOREIGN KEY (routeID) REFERENCES Route(routeID)
 );
