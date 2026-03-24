@@ -4,7 +4,7 @@
   Primary key: clientID
   Dependency:
     clientID -> serviceTier, companyName, startDate, contactPerson
-  The table is in 3NF
+
 */
 CREATE TABLE Client
 (
@@ -22,8 +22,6 @@ GO
   Primary key: productID
   Dependency:
     productID -> name, brand, cost, category, price, length, width, height
-  Not in 3NF originally (handlingRequirements not atomic).
-  Normalised into ProductIdentity + ProductHandling.
 */
 CREATE TABLE Product
 (
@@ -43,8 +41,6 @@ GO
   ProductHandling(productID, handlingRequirement)
   Key: (productID, handlingRequirement)
   Primary key: (productID, handlingRequirement)
-  Normalised from Product to remove non-atomic handlingRequirements.
-  The table is in 3NF
 */
 CREATE TABLE ProductHandling
 (
@@ -61,7 +57,6 @@ GO
   Primary key: supplierID
   Dependency:
     supplierID -> leadTime, paymentTerms, name, country
-  The table is in 3NF
 */
 CREATE TABLE Supplier
 (
@@ -78,7 +73,6 @@ GO
   Key: (period, clientID, supplierID, productID)
   Primary key: (period, clientID, supplierID, productID)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE Supply
 (
@@ -99,7 +93,6 @@ GO
   Primary key: warehouseID
   Dependency:
     warehouseID -> address, size, temperature, security
-  The table is in 3NF
 */
 CREATE TABLE Warehouse
 (
@@ -117,7 +110,6 @@ GO
   Primary key: (warehouseID, location)
   Dependency:
     warehouseID, location -> code
-  The table is in 3NF
 */
 CREATE TABLE Zone
 (
@@ -135,9 +127,6 @@ GO
   Primary key: (warehouseID, productID, clientID, serial#)
   Dependency:
     warehouseID, productID, clientID, serial# -> reservedQty, handQty, orderedQty, location
-  Normalised from original (removed non-atomic movement/reasons -> InventoryMovement,
-  removed derived saleQty = handQty - reservedQty)
-  The table is in 3NF
 */
 CREATE TABLE Inventory
 (
@@ -161,8 +150,6 @@ GO
   InventoryMovement(warehouseID, productID, clientID, serial#, movement, reason, timestamp)
   Key: (warehouseID, productID, clientID, serial#, timestamp)
   Primary key: (warehouseID, productID, clientID, serial#, timestamp)
-  Normalised from Inventory to capture non-atomic movement and reason with timestamp.
-  The table is in 3NF
 */
 CREATE TABLE InventoryMovement
 (
@@ -189,7 +176,6 @@ GO
   Dependency:
     itemSerial# -> productID
     productID -> itemSerial#
-  The table is in 3NF
 */
 CREATE TABLE Item
 (
@@ -205,8 +191,7 @@ GO
   Primary key: orderID
   Dependency:
     orderID -> orderDate, status
-  Normalised from original (removed derived value = SUM(orderQty x unitPrice)).
-  The table is in 3NF
+  derived value = SUM(orderQty x unitPrice)).
 */
 CREATE TABLE PurchaseOrder
 (
@@ -221,7 +206,6 @@ GO
   Key: (orderID, clientID)
   Primary key: (orderID, clientID)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE PurchaseOrder_Client
 (
@@ -238,7 +222,6 @@ GO
   Key: (orderID, supplierID)
   Primary key: (orderID, supplierID)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE PurchaseOrder_Supplier
 (
@@ -256,7 +239,6 @@ GO
   Primary key: (orderID, serial#)
   Dependency:
     orderID, serial# -> exDelDate, unitPrice, orderedQty
-  The table is in 3NF
 */
 CREATE TABLE OrderItem
 (
@@ -278,7 +260,6 @@ GO
   Dependency:
     shipmentID -> trackingNumber, exArrDate, acArrDate, shippedDate, originalLocation, orderID
     trackingNumber -> shipmentID, exArrDate, acArrDate, shippedDate, originalLocation, orderID
-  The table is in 3NF
 */
 CREATE TABLE Shipment
 (
@@ -299,8 +280,6 @@ GO
   Primary key: (shipmentID, serial#)
   Dependency:
     shipmentID, serial# -> shippedQty
-  Normalised from original (removed exArrDate, redundant with Shipment.exArrDate).
-  The table is in 3NF
 */
 CREATE TABLE ShipItem
 (
@@ -318,7 +297,6 @@ GO
   Key: (shipmentID, supplierID)
   Primary key: (shipmentID, supplierID)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE Shipment_Supplier
 (
@@ -335,7 +313,6 @@ GO
   Key: (shipmentID, warehouseID)
   Primary key: (shipmentID, warehouseID)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE Shipment_Warehouse
 (
@@ -353,7 +330,6 @@ GO
   Primary key: staffID
   Dependency:
     staffID -> name, type, hireDate
-  The table is in 3NF
 */
 CREATE TABLE Staff
 (
@@ -370,7 +346,6 @@ GO
   Primary key: staffID
   Dependency:
     staffID -> certification, warehouseID
-  The table is in 3NF
 */
 CREATE TABLE Employee
 (
@@ -389,7 +364,6 @@ GO
   Dependency:
     vehicleID -> type, licensePlate, capacity
     licensePlate -> vehicleID, type, capacity
-  The table is in 3NF
 */
 CREATE TABLE Vehicle
 (
@@ -407,7 +381,6 @@ GO
   Dependency:
     staffID -> licenseNumber, licenseExpiration, vehicleID
     licenseNumber -> staffID, licenseExpiration, vehicleID
-  The table is in 3NF
 */
 CREATE TABLE Driver
 (
@@ -426,8 +399,6 @@ GO
   Primary key: routeID
   Dependency:
     routeID -> totalDistance, status
-  Normalised from original (removed derived totalStops, counted from Stop).
-  The table is in 3NF
 */
 CREATE TABLE Route
 (
@@ -443,7 +414,6 @@ GO
   Primary key: (routeID, sequence)
   Dependency:
     routeID, sequence -> estArrTime, actArrTime
-  The table is in 3NF
 */
 CREATE TABLE Stop
 (
@@ -461,7 +431,6 @@ GO
   Key: (routeID, vehicleID, warehouseID, shipmentID, date)
   Primary key: (routeID, vehicleID, warehouseID, shipmentID, date)
   Dependency: None
-  The table is in 3NF
 */
 CREATE TABLE Delivery
 (
