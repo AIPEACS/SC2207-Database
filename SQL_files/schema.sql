@@ -82,6 +82,7 @@ CREATE TABLE Inventory
   serial# INT NOT NULL,
   reservedQty INT NOT NULL,
   handQty INT NOT NULL,
+  saleQty INT NOT NULL,
   orderedQty INT NOT NULL,
   location VARCHAR(255) NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
