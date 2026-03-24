@@ -58,18 +58,17 @@ async function main(){
         if(Number.isNaN(num)) console.error(`Please enter a valid number`);
     }
 
-    sequelize.sync()
-
-    insert(model, name, num)
-    .catch((error) => {
-        console.error(`Process terminated unexpectedly: ${error.parent}`)
-        rl.close();
+    try {
+        await sequelize.sync();
+        await insert(model, name, num);
+        console.log(`Inserted ${num} records into ${name}`);
+    } catch (error) {
+        console.error(`Process terminated unexpectedly: ${error.parent || error}`);
         process.exit(-1);
-    })
-    .finally(() => {
+    } finally {
         rl.close();
         process.exit(0);
-    })
+    }
 }
 
 main();
