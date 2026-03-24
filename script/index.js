@@ -45,10 +45,10 @@ async function main(){
 
     let name = null
     let model = null;
-    while(model == null){
+    while(model === null){
         name = await question(`Enter table name: `);
         model = models[name];
-        if(model == null) console.error(`Table '${name}' doesn't exists`);
+        if(model === null) console.error(`Table '${name}' doesn't exists`);
     }
 
     let num = NaN;
