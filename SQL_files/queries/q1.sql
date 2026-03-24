@@ -1,3 +1,4 @@
+
 -- For each warehouse, find its top 3 clients by total inventory value (handQty * product price)
 SELECT
     warehouseID,

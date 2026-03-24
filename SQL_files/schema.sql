@@ -1,3 +1,5 @@
+USE [<DATABASE>];
+GO
 /*
   Client(clientID, serviceTier, companyName, startDate, contactPerson)
   Key: clientID

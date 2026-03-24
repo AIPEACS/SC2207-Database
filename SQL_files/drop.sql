@@ -1,4 +1,6 @@
 -- Drop tables in reverse dependency order to avoid FK constraint violations
+USE [<DATABASE>];
+GO
 
 DROP TABLE IF EXISTS Delivery;
 DROP TABLE IF EXISTS Stop;
