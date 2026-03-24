@@ -3,7 +3,7 @@
 	SELECT Supplier.supplierID AS supplierID
 	FROM Supplier
 	WHERE NOT EXISTS (
-		SELECT 1
+		SELECT sr.supplierID
 		FROM Supplier sr
 		JOIN Shipment_Supplier shsr ON sr.supplierID = shsr.supplierID
 		JOIN Shipment_Warehouse shw ON shsr.shipmentID = shw.shipmentID
