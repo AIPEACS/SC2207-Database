@@ -1,3 +1,11 @@
+/*
+  Client(clientID, serviceTier, companyName, startDate, contactPerson)
+  Key: clientID
+  Primary key: clientID
+  Dependency:
+    clientID -> serviceTier, companyName, startDate, contactPerson
+  The table is in 3NF
+*/
 CREATE TABLE Client
 (
   clientID INT IDENTITY(1,1) PRIMARY KEY,
@@ -8,6 +16,15 @@ CREATE TABLE Client
 );
 GO
 
+/*
+  Product(productID, name, brand, cost, category, price, length, width, height)
+  Key: productID
+  Primary key: productID
+  Dependency:
+    productID -> name, brand, cost, category, price, length, width, height
+  Not in 3NF originally (handlingRequirements not atomic).
+  Normalised into ProductIdentity + ProductHandling.
+*/
 CREATE TABLE Product
 (
   productID INT IDENTITY(1,1) PRIMARY KEY,
@@ -22,6 +39,13 @@ CREATE TABLE Product
 );
 GO
 
+/*
+  ProductHandling(productID, handlingRequirement)
+  Key: (productID, handlingRequirement)
+  Primary key: (productID, handlingRequirement)
+  Normalised from Product to remove non-atomic handlingRequirements.
+  The table is in 3NF
+*/
 CREATE TABLE ProductHandling
 (
   productID INT NOT NULL,
@@ -31,6 +55,14 @@ CREATE TABLE ProductHandling
 );
 GO
 
+/*
+  Supplier(supplierID, leadTime, paymentTerms, name, country)
+  Key: supplierID
+  Primary key: supplierID
+  Dependency:
+    supplierID -> leadTime, paymentTerms, name, country
+  The table is in 3NF
+*/
 CREATE TABLE Supplier
 (
   supplierID INT IDENTITY(1,1) PRIMARY KEY,
@@ -41,6 +73,13 @@ CREATE TABLE Supplier
 );
 GO
 
+/*
+  Supply(period, clientID, supplierID, productID)
+  Key: (period, clientID, supplierID, productID)
+  Primary key: (period, clientID, supplierID, productID)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE Supply
 (
   period DATE NOT NULL,
@@ -54,6 +93,14 @@ CREATE TABLE Supply
 );
 GO
 
+/*
+  Warehouse(warehouseID, address, size, temperature, security)
+  Key: warehouseID
+  Primary key: warehouseID
+  Dependency:
+    warehouseID -> address, size, temperature, security
+  The table is in 3NF
+*/
 CREATE TABLE Warehouse
 (
   warehouseID INT IDENTITY(1,1) PRIMARY KEY,
@@ -64,6 +111,14 @@ CREATE TABLE Warehouse
 );
 GO
 
+/*
+  Zone(warehouseID, location, code)
+  Key: (warehouseID, location)
+  Primary key: (warehouseID, location)
+  Dependency:
+    warehouseID, location -> code
+  The table is in 3NF
+*/
 CREATE TABLE Zone
 (
   warehouseID INT NOT NULL,
@@ -74,6 +129,16 @@ CREATE TABLE Zone
 );
 GO
 
+/*
+  Inventory(warehouseID, productID, clientID, serial#, reservedQty, handQty, orderedQty, location)
+  Key: (warehouseID, productID, clientID, serial#)
+  Primary key: (warehouseID, productID, clientID, serial#)
+  Dependency:
+    warehouseID, productID, clientID, serial# -> reservedQty, handQty, orderedQty, location
+  Normalised from original (removed non-atomic movement/reasons -> InventoryMovement,
+  removed derived saleQty = handQty - reservedQty)
+  The table is in 3NF
+*/
 CREATE TABLE Inventory
 (
   warehouseID INT NOT NULL,
@@ -82,6 +147,7 @@ CREATE TABLE Inventory
   serial# INT NOT NULL,
   reservedQty INT NOT NULL,
   handQty INT NOT NULL,
+  -- saleQty = handQty - reservedQty
   orderedQty INT NOT NULL,
   location VARCHAR(255) NOT NULL,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
@@ -91,6 +157,13 @@ CREATE TABLE Inventory
 );
 GO
 
+/*
+  InventoryMovement(warehouseID, productID, clientID, serial#, movement, reason, timestamp)
+  Key: (warehouseID, productID, clientID, serial#, timestamp)
+  Primary key: (warehouseID, productID, clientID, serial#, timestamp)
+  Normalised from Inventory to capture non-atomic movement and reason with timestamp.
+  The table is in 3NF
+*/
 CREATE TABLE InventoryMovement
 (
   warehouseID INT NOT NULL,
@@ -109,6 +182,15 @@ CREATE TABLE InventoryMovement
 );
 GO
 
+/*
+  Item(itemSerial#, productID)
+  Key: itemSerial#, productID
+  Primary key: itemSerial#
+  Dependency:
+    itemSerial# -> productID
+    productID -> itemSerial#
+  The table is in 3NF
+*/
 CREATE TABLE Item
 (
   itemSerial# INT IDENTITY(1,1) PRIMARY KEY,
@@ -117,6 +199,15 @@ CREATE TABLE Item
 );
 GO
 
+/*
+  PurchaseOrder(orderID, orderDate, status)
+  Key: orderID
+  Primary key: orderID
+  Dependency:
+    orderID -> orderDate, status
+  Normalised from original (removed derived value = SUM(orderQty x unitPrice)).
+  The table is in 3NF
+*/
 CREATE TABLE PurchaseOrder
 (
   orderID INT IDENTITY(1,1) PRIMARY KEY,
@@ -125,6 +216,13 @@ CREATE TABLE PurchaseOrder
 );
 GO
 
+/*
+  PurchaseOrder_Client(orderID, clientID)
+  Key: (orderID, clientID)
+  Primary key: (orderID, clientID)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE PurchaseOrder_Client
 (
   orderID INT NOT NULL,
@@ -135,6 +233,13 @@ CREATE TABLE PurchaseOrder_Client
 );
 GO
 
+/*
+  PurchaseOrder_Supplier(orderID, supplierID)
+  Key: (orderID, supplierID)
+  Primary key: (orderID, supplierID)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE PurchaseOrder_Supplier
 (
   orderID INT NOT NULL,
@@ -145,6 +250,14 @@ CREATE TABLE PurchaseOrder_Supplier
 );
 GO
 
+/*
+  OrderItem(orderID, serial#, exDelDate, unitPrice, orderedQty)
+  Key: (orderID, serial#)
+  Primary key: (orderID, serial#)
+  Dependency:
+    orderID, serial# -> exDelDate, unitPrice, orderedQty
+  The table is in 3NF
+*/
 CREATE TABLE OrderItem
 (
   orderID INT NOT NULL,
@@ -158,6 +271,15 @@ CREATE TABLE OrderItem
 );
 GO
 
+/*
+  Shipment(shipmentID, exArrDate, acArrDate, shippedDate, originalLocation, trackingNumber, orderID)
+  Key: shipmentID, trackingNumber
+  Primary key: shipmentID
+  Dependency:
+    shipmentID -> trackingNumber, exArrDate, acArrDate, shippedDate, originalLocation, orderID
+    trackingNumber -> shipmentID, exArrDate, acArrDate, shippedDate, originalLocation, orderID
+  The table is in 3NF
+*/
 CREATE TABLE Shipment
 (
   shipmentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -171,6 +293,15 @@ CREATE TABLE Shipment
 );
 GO
 
+/*
+  ShipItem(shipmentID, serial#, shippedQty)
+  Key: (shipmentID, serial#)
+  Primary key: (shipmentID, serial#)
+  Dependency:
+    shipmentID, serial# -> shippedQty
+  Normalised from original (removed exArrDate, redundant with Shipment.exArrDate).
+  The table is in 3NF
+*/
 CREATE TABLE ShipItem
 (
   shipmentID INT NOT NULL,
@@ -182,6 +313,13 @@ CREATE TABLE ShipItem
 );
 GO
 
+/*
+  Shipment_Supplier(shipmentID, supplierID)
+  Key: (shipmentID, supplierID)
+  Primary key: (shipmentID, supplierID)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE Shipment_Supplier
 (
   shipmentID INT NOT NULL,
@@ -192,6 +330,13 @@ CREATE TABLE Shipment_Supplier
 );
 GO
 
+/*
+  Shipment_Warehouse(shipmentID, warehouseID)
+  Key: (shipmentID, warehouseID)
+  Primary key: (shipmentID, warehouseID)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE Shipment_Warehouse
 (
   shipmentID INT NOT NULL,
@@ -202,6 +347,14 @@ CREATE TABLE Shipment_Warehouse
 );
 GO
 
+/*
+  Staff(staffID, name, type, hireDate)
+  Key: staffID
+  Primary key: staffID
+  Dependency:
+    staffID -> name, type, hireDate
+  The table is in 3NF
+*/
 CREATE TABLE Staff
 (
   staffID INT IDENTITY(1,1) PRIMARY KEY,
@@ -211,6 +364,14 @@ CREATE TABLE Staff
 );
 GO
 
+/*
+  Employee(staffID, certification, warehouseID)
+  Key: staffID
+  Primary key: staffID
+  Dependency:
+    staffID -> certification, warehouseID
+  The table is in 3NF
+*/
 CREATE TABLE Employee
 (
   staffID INT NOT NULL PRIMARY KEY,
@@ -221,6 +382,15 @@ CREATE TABLE Employee
 );
 GO
 
+/*
+  Vehicle(vehicleID, type, licensePlate, capacity)
+  Key: vehicleID, licensePlate
+  Primary key: vehicleID
+  Dependency:
+    vehicleID -> type, licensePlate, capacity
+    licensePlate -> vehicleID, type, capacity
+  The table is in 3NF
+*/
 CREATE TABLE Vehicle
 (
   vehicleID INT IDENTITY(1,1) PRIMARY KEY,
@@ -230,6 +400,15 @@ CREATE TABLE Vehicle
 );
 GO
 
+/*
+  Driver(staffID, licenseNumber, licenseExpiration, vehicleID)
+  Key: staffID, licenseNumber
+  Primary key: staffID
+  Dependency:
+    staffID -> licenseNumber, licenseExpiration, vehicleID
+    licenseNumber -> staffID, licenseExpiration, vehicleID
+  The table is in 3NF
+*/
 CREATE TABLE Driver
 (
   staffID INT NOT NULL PRIMARY KEY,
@@ -241,6 +420,15 @@ CREATE TABLE Driver
 );
 GO
 
+/*
+  Route(routeID, totalDistance, status)
+  Key: routeID
+  Primary key: routeID
+  Dependency:
+    routeID -> totalDistance, status
+  Normalised from original (removed derived totalStops, counted from Stop).
+  The table is in 3NF
+*/
 CREATE TABLE Route
 (
   routeID INT IDENTITY(1,1) PRIMARY KEY,
@@ -249,6 +437,14 @@ CREATE TABLE Route
 );
 GO
 
+/*
+  Stop(routeID, sequence, estArrTime, actArrTime)
+  Key: (routeID, sequence)
+  Primary key: (routeID, sequence)
+  Dependency:
+    routeID, sequence -> estArrTime, actArrTime
+  The table is in 3NF
+*/
 CREATE TABLE Stop
 (
   routeID INT NOT NULL,
@@ -260,6 +456,13 @@ CREATE TABLE Stop
 );
 GO
 
+/*
+  Delivery(routeID, vehicleID, warehouseID, shipmentID, date)
+  Key: (routeID, vehicleID, warehouseID, shipmentID, date)
+  Primary key: (routeID, vehicleID, warehouseID, shipmentID, date)
+  Dependency: None
+  The table is in 3NF
+*/
 CREATE TABLE Delivery
 (
   routeID INT NOT NULL,
