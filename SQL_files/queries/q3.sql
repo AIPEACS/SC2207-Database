@@ -2,7 +2,7 @@
 -- YEAR(Date): TSQL to get a year form a date
 SELECT
 	month,
-	A.rank as r
+	rank
 FROM (
 	SELECT 
 		MONTH(po.orderDate) AS month,
@@ -13,4 +13,4 @@ FROM (
 	WHERE YEAR(po.orderDate)>= YEAR(GETDATE()) - 2
 	GROUP BY MONTH(po.orderDate)
 ) A
-WHERE A.rank<=3;
+WHERE rank<=3;
