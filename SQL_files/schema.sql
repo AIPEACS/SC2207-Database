@@ -4,7 +4,6 @@
   Primary key: clientID
   Dependency:
     clientID -> serviceTier, companyName, startDate, contactPerson
-
 */
 CREATE TABLE Client
 (
