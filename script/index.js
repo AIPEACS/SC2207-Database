@@ -13,6 +13,7 @@ const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
 const { PurchaseOrder } = require("./model/PurchaseOrder");
 const { Route } = require("./model/Route");
+const { Shipment } = require("./model/Shipment");
 const { Supplier } = require("./model/Supplier");
 const { Supply } = require("./model/Supply");
 const { Vehicle } = require("./model/Vehicle");
@@ -32,6 +33,7 @@ const models = {
     ProductHandling,
     PurchaseOrder,
     Route,
+    Shipment,
     Supplier,
     Supply,
     Vehicle,
