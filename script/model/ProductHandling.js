@@ -38,7 +38,16 @@ function generateRecord(){
 ProductHandling.generateRecord = generateRecord;
 ProductHandling.insertRecords = async (handling) => {
     await assignUniqueFK("Product", "ProductHandling", handling, "productID", 0);
-    await ProductHandling.bulkCreate(handling);
+
+    for (const record of handling) {
+        await ProductHandling.findOrCreate({
+            where: {
+                productID: record.productID,
+                handlingRequirement: record.handlingRequirement,
+            },
+            defaults: record
+        });
+    }
 }
 
 module.exports = {

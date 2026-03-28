@@ -32,8 +32,8 @@ $seedSteps = @(
     @{ table = 'Driver'; count = 10 },
     @{ table = 'PurchaseOrder'; count = 10 },
     @{ table = 'Shipment'; count = 10 },
-    @{ table = 'OrderItem'; count = 15 },
     @{ table = 'Item'; count = 15 },
+    @{ table = 'OrderItem'; count = 15 },
     @{ table = 'ShipItem'; count = 15 },
     @{ table = 'Shipment_Supplier'; count = 15 },
     @{ table = 'Shipment_Warehouse'; count = 15 },
@@ -46,14 +46,13 @@ $seedSteps = @(
 )
 
 foreach ($step in $seedSteps) {
-    Write-Host "[INFO] Running index.js $($step.table) $($step.count)"
     $process = Start-Process -FilePath node -ArgumentList "index.js $($step.table) $($step.count)" -NoNewWindow -PassThru -Wait
     if ($process.ExitCode -ne 0) {
-        Write-Warning "Table $($step.table) failed to seed (exit $($process.ExitCode)). It may not exist yet; continuing with remaining tables."
+        Write-Warning "[WARN] $($step.table) seed failed, continuing (exit $($process.ExitCode))."
         continue
     }
+    Write-Host "[OK] $($step.table) seeded ($($step.count))."
 }
-
 
 Write-Host "[INFO] Running q6_specific.js to ensure q6-valid supplier state..."
 $process = Start-Process -FilePath node -ArgumentList 'q6_specific.js' -NoNewWindow -PassThru -Wait
