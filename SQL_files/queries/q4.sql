@@ -1,4 +1,4 @@
-SELECT  o.orderDate AS orderDate, d.date AS deliveryDate, DATEDIFF(MONTH, o.orderDate, d.date) as monthDiff
+SELECT  o.orderDate AS orderDate, CAST(d.date AS DATE) AS deliveryDate, DATEDIFF(MONTH, o.orderDate, d.date) as monthDiff
 FROM Delivery d
 LEFT JOIN Shipment s
 ON d.shipmentID = s.shipmentID
