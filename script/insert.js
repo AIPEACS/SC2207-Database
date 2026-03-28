@@ -41,21 +41,14 @@ async function assignFK(fkModel, records) {
 }
 
 async function assignUniqueFK(fkModelName, modelName, records, fkName, nullProbability) {
-    // This helper is used by join tables, where the same FK may appear in multiple records.
-    // It now gracefully handles insufficient fk rows by reusing existing values instead of throwing.
-    const [fkrecords, _] = await sequelize.query(`SELECT ${fkName} FROM ${fkModelName}`);
+    const [fkrecords, _] = await sequelize.query(`SELECT ${fkName} FROM ${fkModelName} WHERE ${fkName} NOT IN (SELECT ${fkName} FROM ${modelName})`);
 
-    if (fkrecords.length === 0) throw Error(`No FK records found for ${fkModelName}.${fkName}`);
+    if(nullProbability == 0 && fkrecords.length < records.length) throw Error("Insufficient Unique FK");
 
-    const availableIds = fkrecords.map(r => r[fkName]);
-
+    let fkindex = 0;
     records.forEach(record => {
-        if (nullProbability > 0 && Math.random() < nullProbability) {
-            record[fkName] = null;
-        } else {
-            const chosen = availableIds[Math.floor(Math.random() * availableIds.length)];
-            record[fkName] = chosen;
-        }
+        if(fkindex >= fkrecords.length || Math.random() < nullProbability) record[fkName] = null;
+        else record[fkName] = fkrecords[fkindex++][fkName];
     });
 }
 

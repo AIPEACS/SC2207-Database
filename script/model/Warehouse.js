@@ -37,7 +37,7 @@ const sizeRange = [5000, 15000];
 
 function generateRecord(){
     return {
-        address: randomElement(["Singapore", "United States of America", "Thailand"]),
+        address: randomElement(["Singapore", "Los Angeles, USA", "Thailand"]),
         temperature: randomElement(temperature),
         security: randomElement(security),
         size: randomNumber(...sizeRange),

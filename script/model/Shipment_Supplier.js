@@ -4,9 +4,9 @@ const { sequelize } = require('../init');
 const { assignUniqueFK, assignFK } = require("../insert");
 
 const { Shipment } = require("./Shipment");
-const { Warehouse } = require("./Warehouse");
+const { Supplier } = require("./Supplier");
 
-const Shipment_Warehouse = sequelize.define('Shipment_Warehouse', {
+const Shipment_Supplier = sequelize.define('Shipment_Supplier', {
     shipmentID: {
         type: DataTypes.INTEGER,
         primaryKey: true, 
@@ -15,12 +15,12 @@ const Shipment_Warehouse = sequelize.define('Shipment_Warehouse', {
             key: 'shipmentID', 
         }
     },
-    warehouseID: {
+    supplierID: {
         type: DataTypes.INTEGER,
         primaryKey: true, 
         references: {
-            model: Warehouse, 
-            key: 'warehouseID', 
+            model: Supplier, 
+            key: 'supplierID', 
         }
     },
 }, {
@@ -32,13 +32,13 @@ function generateRecord(){
     return {}
 }
 
-Shipment_Warehouse.generateRecord = generateRecord;
-Shipment_Warehouse.insertRecords = async (records) => {
-    await assignUniqueFK("Shipment", "Shipment_Warehouse", records, "shipmentID", 0);
-    await assignFK(Warehouse, records);
-    await Shipment_Warehouse.bulkCreate(records);
+Shipment_Supplier.generateRecord = generateRecord;
+Shipment_Supplier.insertRecords = async (records) => {
+    await assignUniqueFK("Shipment", "Shipment_Supplier", records, "shipmentID", 0);
+    await assignFK(Supplier, records);
+    await Shipment_Supplier.bulkCreate(records);
 }
 
 module.exports = {
-    Shipment_Warehouse
+    Shipment_Supplier
 };

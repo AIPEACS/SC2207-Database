@@ -6,9 +6,6 @@ SELECT TOP 3
 FROM (
 	SELECT 
 		MONTH(po.orderDate) AS month,
-		-- DENSE_RANK() OVER (
-		-- 	ORDER BY COUNT(po.orderID) DESC
-		-- ) AS rank,
 		COUNT(po.orderID) AS count
 	FROM PurchaseOrder po
 	WHERE YEAR(po.orderDate)>= YEAR(GETDATE()) - 2

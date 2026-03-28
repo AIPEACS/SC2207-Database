@@ -10,7 +10,6 @@ const { Employee } = require("./model/Employee");
 const { Inventory } = require("./model/Inventory");
 const { InventoryMovement } = require("./model/InventoryMovement");
 const { Item } = require("./model/Item");
-const { Staff } = require("./model/Staff");
 const { OrderItem } = require("./model/OrderItem");
 const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
@@ -25,7 +24,7 @@ const { Zone } = require("./model/Zone");
 
 const { rl, question } = require("./cli");
 const { ShipItem } = require("./model/ShipItem");
-const { Shipment_Supplier } = require("./model/ShipmentSupplier");
+const { Shipment_Supplier } = require("./model/Shipment_Supplier");
 const { Shipment_Warehouse } = require("./model/Shipment_Warehouse");
 
 const models = {
@@ -37,7 +36,6 @@ const models = {
     InventoryMovement,
     Item,
     OrderItem,
-    Staff,
     Product,
     ProductHandling,
     PurchaseOrder,

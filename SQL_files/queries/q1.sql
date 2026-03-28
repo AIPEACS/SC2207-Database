@@ -1,25 +1,28 @@
-
--- For each warehouse, find its top 3 clients by total inventory value (handQty * product price)
-SELECT
+SELECT 
     warehouseID,
     clientID,
-    companyName,
-    totalValue,
-    r AS relative_rank
-FROM (
+    SUM(orderedQty * unitPrice) AS business
+FROM OrderItem
+GROUP BY warehouseID, clientID
+ORDER BY warehouseID ASC, business DESC;
+
+WITH Business AS (
+    SELECT 
+        warehouseID,
+        clientID,
+        SUM(orderedQty * unitPrice) AS business
+    FROM OrderItem
+    GROUP BY warehouseID, clientID
+),
+Ranked AS (
     SELECT
-        i.warehouseID,
-        i.clientID,
-        c.companyName,
-        SUM(i.handQty * p.price) AS totalValue,
-        DENSE_RANK() OVER (
-            PARTITION BY i.warehouseID
-            ORDER BY SUM(i.handQty * p.price) DESC
-        ) AS r
-    FROM Inventory i
-    JOIN Product p ON i.productID = p.productID
-    JOIN Client  c ON i.clientID  = c.clientID
-    GROUP BY i.warehouseID, i.clientID, c.companyName
-) ranked
-WHERE r <= 3
-ORDER BY warehouseID, r;
+        warehouseID,
+        clientID,
+        business,
+        ROW_NUMBER() OVER (PARTITION BY warehouseID ORDER BY business DESC) AS rank
+    FROM Business
+)
+SELECT warehouseID, clientID, business, rank
+FROM Ranked
+WHERE rank <= 3
+ORDER BY warehouseID, rank;

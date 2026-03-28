@@ -1,35 +1,26 @@
-SELECT DISTINCT ss.supplierID,w.address
-FROM Shipment_Supplier ss
-LEFT JOIN Shipment_Warehouse sw
-	ON ss.shipmentID = sw.shipmentID
-LEFT JOIN Warehouse w 
-	ON sw.warehouseID = w.warehouseID
-WHERE w.address = 'Singapore'
+SELECT DISTINCT s.supplierID, w.address
+FROM Supply s
+INNER JOIN Inventory i
+    ON s.productID = i.productID AND s.clientID = i.clientID
+INNER JOIN Warehouse w
+    ON i.warehouseID = w.warehouseID;
 
-SELECT DISTINCT ss.supplierID, w.address
-FROM Shipment_Supplier ss
-LEFT JOIN Shipment_Warehouse sw
-	ON ss.shipmentID = sw.shipmentID
-LEFT JOIN Warehouse w 
-	ON sw.warehouseID = w.warehouseID
-WHERE w.address <> 'Singapore'
-
-(
-	SELECT DISTINCT ss.supplierID, s.name
-	FROM Shipment_Supplier ss
-	LEFT JOIN Shipment_Warehouse sw
-		ON ss.shipmentID = sw.shipmentID
-	LEFT JOIN Warehouse w 
-		ON sw.warehouseID = w.warehouseID
-	LEFT JOIN supplier s ON ss.supplierID = s.supplierID
-	WHERE w.address = 'Singapore'
-) EXCEPT (
-	SELECT DISTINCT ss.supplierID, s.name
-	FROM Shipment_Supplier ss
-	LEFT JOIN Shipment_Warehouse sw
-		ON ss.shipmentID = sw.shipmentID
-	LEFT JOIN Warehouse w 
-		ON sw.warehouseID = w.warehouseID
-	LEFT JOIN supplier s ON ss.supplierID = s.supplierID
-	WHERE w.address <> 'Singapore'
+WITH SupplyAddress(supplierID, address) AS (
+    SELECT DISTINCT s.supplierID, w.address
+    FROM Supply s
+    INNER JOIN Inventory i
+        ON s.productID = i.productID AND s.clientID = i.clientID
+    INNER JOIN Warehouse w
+        ON i.warehouseID = w.warehouseID
+)
+SELECT s.supplierID, s.name
+FROM Supplier s
+WHERE EXISTS (
+    SELECT 1
+    FROM SupplyAddress sa
+    WHERE sa.address = 'Singapore' AND s.supplierID = sa.supplierID
+) AND NOT EXISTS (
+    SELECT 1
+    FROM SupplyAddress sa
+    WHERE sa.address <> 'Singapore' AND s.supplierID = sa.supplierID
 )

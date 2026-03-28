@@ -187,7 +187,7 @@ GO
 CREATE TABLE Item
 (
   itemSerial# INT IDENTITY(1,1) PRIMARY KEY,
-  productID INT NOT NULL,
+  productID INT NOT NULL UNIQUE,
   FOREIGN KEY (productID) REFERENCES Product(productID)
     ON DELETE CASCADE
 );
@@ -252,20 +252,43 @@ GO
   Dependency:
     orderID, serial# -> exDelDate, unitPrice, orderedQty
 */
+-- CREATE TABLE OrderItem
+-- (
+--   orderID INT NOT NULL,
+--   itemSerial# INT NOT NULL,
+--   exDelDate DATE NOT NULL,
+--   unitPrice DECIMAL(38, 2) NOT NULL,
+--   orderedQty INT NOT NULL,
+--   PRIMARY KEY (orderID, itemSerial#),
+--   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
+--     ON DELETE CASCADE,
+--   FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
+--     ON DELETE CASCADE
+-- );
+-- GO
 CREATE TABLE OrderItem
 (
   orderID INT NOT NULL,
   itemSerial# INT NOT NULL,
+  serial# INT NOT NULL,
+  productID INT NOT NULL,
+  clientID INT NOT NULL,
+  warehouseID INT NOT NULL,
+  supplierID INT NOT NULL,
   exDelDate DATE NOT NULL,
   unitPrice DECIMAL(38, 2) NOT NULL,
   orderedQty INT NOT NULL,
-  PRIMARY KEY (orderID, itemSerial#),
+  PRIMARY KEY (orderID, itemSerial#, serial#, productID, clientID, warehouseID, supplierID),
   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
     ON DELETE CASCADE,
   FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
+    ON DELETE NO ACTION,
+  FOREIGN KEY (warehouseID, productID, clientID, serial#) REFERENCES Inventory(warehouseID, productID, clientID, serial#)
+    ON DELETE CASCADE,
+  FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
     ON DELETE CASCADE
 );
-GO
+GO;
 
 /*
   Shipment(shipmentID, exArrDate, acArrDate, shippedDate, originalLocation, trackingNumber, orderID)
