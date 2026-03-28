@@ -1,6 +1,6 @@
 
 (
-	SELECT Supplier.supplierID AS supplierID
+	SELECT Supplier.supplierID AS supplierID, Supplier.name AS name
 	FROM Supplier
 	WHERE NOT EXISTS (
 		SELECT sr.supplierID
@@ -12,7 +12,7 @@
 			AND Supplier.supplierID = sr.supplierID
 	)
 ) INTERSECT (
-	SELECT Supplier.supplierID AS supplierID
+	SELECT Supplier.supplierID AS supplierID, Supplier.name AS name
 	FROM Supplier
 	WHERE NOT EXISTS (
 		SELECT w.warehouseID
