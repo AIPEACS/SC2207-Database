@@ -44,47 +44,40 @@ function generateRecord(){
 
 Zone.generateRecord = generateRecord;
 Zone.insertRecords = async (zones) => {
-    const warehouses = await Warehouse.findAll({ attributes: ['warehouseID'] });
+    const warehouses = await Warehouse.findAll({ attributes: ['warehouseID'], order: [['warehouseID', 'ASC']] });
     const warehouseIDs = warehouses.map(w => w.warehouseID);
 
     if (warehouseIDs.length === 0) throw Error('No Warehouse records available for Zone assignment');
 
-    // Guarantee at least one Zone per Warehouse
-    // If requested zones < warehouses, add one Zone per warehouse (will exceed requested count).
-    const baseZones = [];
-    warehouseIDs.forEach(id => {
-        baseZones.push({
-            warehouseID: id,
-            location: randomInt(...locationRange),
-            code: randomElement(code),
-        });
-    });
+    // Assign as many zones as possible from the requested records.
+    const seedCount = Math.min(zones.length, warehouseIDs.length);
 
-    if (zones.length >= warehouseIDs.length) {
-        // Assign each provided zone to a warehouse in round-robin order and save them.
-        for (let i = 0; i < zones.length; i++) {
-            zones[i].warehouseID = warehouseIDs[i % warehouseIDs.length];
-            zones[i].location = zones[i].location ?? randomInt(...locationRange);
-            zones[i].code = zones[i].code ?? randomElement(code);
-        }
-        await Zone.bulkCreate(zones);
+    for (let i = 0; i < seedCount; i++) {
+        zones[i].warehouseID = warehouseIDs[i];
+        zones[i].location = zones[i].location ?? randomInt(...locationRange);
+        zones[i].code = zones[i].code ?? randomElement(code);
     }
 
-    // Create any required baseline zones to ensure full warehouse coverage.
-    const usedWarehouseIDs = new Set(zones.map(z => z.warehouseID));
-    const missing = warehouseIDs.filter(id => !usedWarehouseIDs.has(id));
-    if (missing.length > 0) {
-        const extras = missing.map(id => ({
+    // Extra seeded zones beyond one-per-warehouse come from random warehouses.
+    for (let i = seedCount; i < zones.length; i++) {
+        zones[i].warehouseID = warehouseIDs[Math.floor(Math.random() * warehouseIDs.length)];
+        zones[i].location = zones[i].location ?? randomInt(...locationRange);
+        zones[i].code = zones[i].code ?? randomElement(code);
+    }
+
+    await Zone.bulkCreate(zones);
+
+    // Guarantee each warehouse has at least one zone. If any warehouse has no zone, insert one.
+    const currentWarehouseIDs = new Set((await Zone.findAll({ attributes: ['warehouseID'] })).map(z => z.warehouseID));
+    const missingIDs = warehouseIDs.filter(id => !currentWarehouseIDs.has(id));
+
+    if (missingIDs.length > 0) {
+        const extras = missingIDs.map(id => ({
             warehouseID: id,
             location: randomInt(...locationRange),
             code: randomElement(code),
         }));
         await Zone.bulkCreate(extras);
-    }
-
-    // Also include explicit per-warehouse zones where inscount < warehouses
-    if (zones.length < warehouseIDs.length) {
-        await Zone.bulkCreate(baseZones);
     }
 };
 
