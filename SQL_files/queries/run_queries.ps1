@@ -10,6 +10,59 @@ $database = '<DATABASE>'
 $user = '<USERNAME>'
 $password = '<PASSWORD>'
 
+function Export-QueryToCsv {
+    param (
+        [string]$ConnectionString,
+        [string]$SqlText,
+        [string]$OutPath
+    )
+
+    Add-Type -AssemblyName System.Data
+    $connection = New-Object System.Data.SqlClient.SqlConnection $ConnectionString
+    $command = $connection.CreateCommand()
+    $command.CommandText = $SqlText
+
+    try {
+        $connection.Open()
+        $reader = $command.ExecuteReader()
+
+        if (-not $reader.HasRows) {
+            Set-Content -Path $OutPath -Value '' -Encoding UTF8
+            return
+        }
+
+        $columns = @()
+        for ($j = 0; $j -lt $reader.FieldCount; $j++) {
+            $columns += $reader.GetName($j)
+        }
+
+        $lines = @()
+        $lines += ($columns -join ',')
+
+        while ($reader.Read()) {
+            $rowValues = @()
+            for ($j = 0; $j -lt $reader.FieldCount; $j++) {
+                $value = $reader.GetValue($j)
+                if ($null -eq $value) { $rowValues += '' ; continue }
+                $str = [string]$value
+                if ($str -match '[,"\r\n]') {
+                    $str = '"' + ($str -replace '"', '""') + '"'
+                }
+                $rowValues += $str
+            }
+            $lines += ($rowValues -join ',')
+        }
+
+        $reader.Close()
+        Set-Content -Path $OutPath -Value $lines -Encoding UTF8
+    } finally {
+        if ($reader) { $reader.Close() }
+        $connection.Close()
+    }
+}
+
+$connectionString = "Server=$server;Database=$database;User Id=$user;Password=$password;Encrypt=False;TrustServerCertificate=True;"
+
 for ($i = 1; $i -le 7; $i++) {
     $sqlFile = Join-Path $baseDir "q${i}.sql"
     $outFile = Join-Path $outDir "q${i}.csv"
@@ -20,7 +73,8 @@ for ($i = 1; $i -le 7; $i++) {
     }
 
     Write-Host "[INFO] Running q$i -> $outFile"
-    sqlcmd -S $server -U $user -P $password -d $database -i $sqlFile -s ',' -W -o $outFile
+    $sqlText = Get-Content -Path $sqlFile -Raw
+    Export-QueryToCsv -ConnectionString $connectionString -SqlText $sqlText -OutPath $outFile
     Write-Host "[OK] Created $outFile"
 }
 
