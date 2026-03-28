@@ -4,7 +4,8 @@ SELECT
     warehouseID,
     clientID,
     companyName,
-    totalValue
+    totalValue,
+    r AS relative_rank
 FROM (
     SELECT
         i.warehouseID,

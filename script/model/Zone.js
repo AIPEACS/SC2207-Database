@@ -44,9 +44,49 @@ function generateRecord(){
 
 Zone.generateRecord = generateRecord;
 Zone.insertRecords = async (zones) => {
-    await assignFK(Warehouse, zones);
-    await Zone.bulkCreate(zones);
-}
+    const warehouses = await Warehouse.findAll({ attributes: ['warehouseID'] });
+    const warehouseIDs = warehouses.map(w => w.warehouseID);
+
+    if (warehouseIDs.length === 0) throw Error('No Warehouse records available for Zone assignment');
+
+    // Guarantee at least one Zone per Warehouse
+    // If requested zones < warehouses, add one Zone per warehouse (will exceed requested count).
+    const baseZones = [];
+    warehouseIDs.forEach(id => {
+        baseZones.push({
+            warehouseID: id,
+            location: randomInt(...locationRange),
+            code: randomElement(code),
+        });
+    });
+
+    if (zones.length >= warehouseIDs.length) {
+        // Assign each provided zone to a warehouse in round-robin order and save them.
+        for (let i = 0; i < zones.length; i++) {
+            zones[i].warehouseID = warehouseIDs[i % warehouseIDs.length];
+            zones[i].location = zones[i].location ?? randomInt(...locationRange);
+            zones[i].code = zones[i].code ?? randomElement(code);
+        }
+        await Zone.bulkCreate(zones);
+    }
+
+    // Create any required baseline zones to ensure full warehouse coverage.
+    const usedWarehouseIDs = new Set(zones.map(z => z.warehouseID));
+    const missing = warehouseIDs.filter(id => !usedWarehouseIDs.has(id));
+    if (missing.length > 0) {
+        const extras = missing.map(id => ({
+            warehouseID: id,
+            location: randomInt(...locationRange),
+            code: randomElement(code),
+        }));
+        await Zone.bulkCreate(extras);
+    }
+
+    // Also include explicit per-warehouse zones where inscount < warehouses
+    if (zones.length < warehouseIDs.length) {
+        await Zone.bulkCreate(baseZones);
+    }
+};
 
 module.exports = {
     Zone
