@@ -1,0 +1,374 @@
+--- Client (10 rows) ---
+clientID,serviceTier,companyName,startDate,contactPerson
+1,silver,"Hauck, Blick and Hills",2025-07-21,Geneva Walker
+2,silver,Nitzsche - Pacocha,2024-03-01,Adelia Wehner
+3,silver,Hoeger - Veum,2025-01-04,Doris Feest
+4,gold,"Grady, Schmeler and Carroll",2024-05-23,Immanuel Mayert
+5,bronze,"Dare, Emmerich and Beer",2025-07-02,Olga Rempel DDS
+6,bronze,"Ryan, Zieme and McLaughlin",2024-03-16,Roberta Schmidt I
+7,silver,Ondricka LLC,2025-08-25,Mrs. Judith Ernser
+8,gold,Cruickshank - Murray,2023-04-11,Rowan Hills
+9,silver,Cassin - Beer,2024-06-16,Anne Fay
+10,silver,Hagenes Group,2024-06-03,Deven Lang
+
+--- Delivery (10 rows) ---
+routeID,vehicleID,warehouseID,shipmentID,date
+2,4,1,2,Wed Jan 28 2026 08:00:00 GMT+0800 (China Standard Time)
+2,8,6,5,Sun Mar 15 2026 08:00:00 GMT+0800 (China Standard Time)
+3,6,2,9,Tue Mar 10 2026 08:00:00 GMT+0800 (China Standard Time)
+5,8,10,8,Sun Mar 22 2026 08:00:00 GMT+0800 (China Standard Time)
+5,9,4,3,Tue Mar 24 2026 08:00:00 GMT+0800 (China Standard Time)
+6,4,8,5,Fri Mar 13 2026 08:00:00 GMT+0800 (China Standard Time)
+8,6,5,7,Wed Mar 25 2026 08:00:00 GMT+0800 (China Standard Time)
+9,8,10,4,Wed Jan 07 2026 08:00:00 GMT+0800 (China Standard Time)
+9,9,9,2,Tue Mar 24 2026 08:00:00 GMT+0800 (China Standard Time)
+10,6,5,3,Wed Feb 18 2026 08:00:00 GMT+0800 (China Standard Time)
+
+--- Driver (10 rows) ---
+staffID,licenseNumber,licenseExpiration,vehicleID
+21,681423585574,2029-10-20,4
+22,184950662904,2035-12-29,6
+23,681053997945,2033-04-08,
+24,416374748248,2027-10-21,10
+25,462784730977,2030-02-20,6
+26,200534679929,2032-12-01,1
+27,435752993995,2026-11-30,5
+28,344316910616,2036-01-22,2
+29,663543212998,2028-02-05,2
+30,647529573150,2027-03-10,1
+
+--- Employee (10 rows) ---
+staffID,certification,warehouseID
+11,hazmat handling,7
+12,forklift operator,5
+13,hazmat handling,7
+14,,7
+15,,2
+16,,10
+17,forklift operator,4
+18,forklift operator,8
+19,,7
+20,,10
+
+--- Inventory (20 rows) ---
+warehouseID,productID,clientID,serial#,reservedQty,handQty,orderedQty,location
+1,4,2,538940140,293,264,117,97612
+1,7,3,904679480,201,168,429,97612
+1,8,3,914342928,423,389,435,97612
+1,9,6,351428960,257,341,91,97612
+2,3,2,170430972,205,30,172,39849
+2,6,4,267806665,276,382,432,39849
+3,1,6,740137147,76,211,311,21431
+4,1,1,603000326,68,141,190,14881
+4,9,5,596283285,425,223,63,14881
+5,8,5,221731007,160,320,400,4614
+6,2,10,499791451,220,94,343,64874
+6,3,9,527660329,423,58,197,64874
+7,2,5,250079085,58,436,479,76961
+7,9,6,237080155,49,174,8,76961
+8,10,4,932342301,54,243,237,47698
+9,1,3,874451894,148,161,15,41046
+9,10,7,256709201,185,250,8,41046
+10,6,3,574843273,235,476,84,9919
+10,7,10,284592558,55,405,415,9919
+10,8,7,103982235,46,333,390,9919
+
+--- InventoryMovement (20 rows) ---
+warehouseID,productID,clientID,serial#,movement,reason,timestamp
+1,4,2,538940140,receipts,Minus vorax conspergo sollicito capio tracto aranea basium succurro.,Sun Aug 17 2025 23:33:49 GMT+0800 (China Standard Time)
+1,7,3,904679480,picks,Claudeo cogito dolores vesper.,Fri Nov 26 2021 02:43:50 GMT+0800 (China Standard Time)
+1,7,3,904679480,adjustments,Villa depulso audax.,Mon Nov 28 2022 00:15:18 GMT+0800 (China Standard Time)
+1,7,3,904679480,putaways,Vorago similique nisi vinum vulticulus aqua usus volaticus alias considero.,Tue Oct 29 2024 20:00:42 GMT+0800 (China Standard Time)
+1,8,3,914342928,picks,Tam clamo qui aegre catena textor summa adipisci certus textilis.,Wed Aug 30 2023 01:18:26 GMT+0800 (China Standard Time)
+1,8,3,914342928,adjustments,Curso circumvenio valde averto confero viriliter studio exercitationem.,Sun Apr 27 2025 16:09:12 GMT+0800 (China Standard Time)
+1,9,6,351428960,picks,Nemo volo addo talis deinde suggero ullus comparo.,Sat Dec 11 2021 23:04:00 GMT+0800 (China Standard Time)
+1,9,6,351428960,adjustments,Tergeo adinventitias alias defungo defendo.,Sat Jan 11 2025 06:27:20 GMT+0800 (China Standard Time)
+3,1,6,740137147,receipts,Suus teneo aestus armarium maxime thorax demonstro.,Fri Apr 02 2021 10:10:55 GMT+0800 (China Standard Time)
+4,1,1,603000326,putaways,Territo aetas demum suadeo.,Wed May 12 2021 07:37:30 GMT+0800 (China Standard Time)
+4,1,1,603000326,receipts,Alienus correptius tepidus arcesso tantillus atrocitas.,Thu Jan 12 2023 16:13:56 GMT+0800 (China Standard Time)
+6,2,10,499791451,picks,Vallum velut perferendis cuppedia compello tondeo vilitas sublime tertius modi.,Mon Nov 01 2021 22:34:49 GMT+0800 (China Standard Time)
+6,2,10,499791451,picks,Coniecto spectaculum alter.,Wed Feb 01 2023 13:37:58 GMT+0800 (China Standard Time)
+7,2,5,250079085,receipts,Ratione cohibeo talis aliquam autus cui censura clibanus.,Tue Sep 07 2021 18:34:49 GMT+0800 (China Standard Time)
+7,9,6,237080155,receipts,Cernuus sollicito velociter molestiae.,Fri Apr 18 2025 09:36:07 GMT+0800 (China Standard Time)
+9,1,3,874451894,picks,Tamdiu arbor thermae vehemens impedit.,Sun Jul 04 2021 01:43:44 GMT+0800 (China Standard Time)
+9,1,3,874451894,adjustments,Approbo aspernatur color.,Thu Aug 17 2023 23:01:29 GMT+0800 (China Standard Time)
+9,10,7,256709201,picks,Vitae toties curso.,Fri May 24 2024 05:41:34 GMT+0800 (China Standard Time)
+10,7,10,284592558,picks,Dolorum adfero voluptatem stillicidium.,Mon Sep 27 2021 23:29:03 GMT+0800 (China Standard Time)
+10,7,10,284592558,putaways,Baiulus vitae acquiro caste stips antea.,Mon May 30 2022 23:15:37 GMT+0800 (China Standard Time)
+
+--- Item (15 rows) ---
+itemSerial#,productID
+1,3
+2,8
+3,3
+4,7
+5,7
+6,5
+7,9
+8,8
+9,4
+10,3
+11,9
+12,1
+13,6
+14,6
+15,4
+
+--- OrderItem (15 rows) ---
+orderID,itemSerial#,exDelDate,unitPrice,orderedQty
+1,1,2026-01-04,402.19,940
+1,2,2026-02-25,207.45,280
+1,3,2026-03-17,723.05,119
+1,4,2026-02-26,59.4,261
+1,5,2026-01-09,709.85,430
+1,6,2026-03-03,334.89,309
+1,7,2026-02-02,158.6,493
+1,8,2026-03-26,370.69,625
+1,9,2026-03-19,876.39,935
+1,10,2026-01-12,773.89,707
+1,11,2026-02-03,737.95,620
+1,12,2026-01-11,200.2,438
+1,13,2026-02-08,73.45,872
+1,14,2026-03-12,306.49,111
+1,15,2026-03-21,39.59,289
+
+--- Product (10 rows) ---
+productID,name,brand,cost,category,price,length,width,height
+1,Generic Rubber Shoes,McLaughlin - Jaskolski,110.79,Computers,123.64,90.69,63.03,86.19
+2,Modern Metal Pizza,"Grant, Lesch and Fay",776.19,Books,909.51,79.3,90.96,92.2
+3,Intelligent Granite Cheese,Moore and Sons,365.69,Toys,441.59,95.29,94.94,76.34
+4,Luxurious Bamboo Computer,Bartoletti - Beatty,754,Beauty,793.79,66.52,57.4,59.12
+5,Handcrafted Rubber Chair,Braun - Nienow,904.69,Electronics,1043.29,76.18,55.67,82.85
+6,Handcrafted Marble Pizza,"Ryan, Cronin and Langosh",261.29,Movies,309.39,3.23,4.56,3.89
+7,Sleek Plastic Gloves,Douglas Group,792.09,Outdoors,893.19,23.84,32.23,18.47
+8,Modern Wooden Table,Douglas Group,696.03,Sports,882.64,73.27,70.78,82.54
+9,Handcrafted Gold Chair,Reichert Group,745.55,Books,850.62,2.95,3.81,4.19
+10,Intelligent Metal Bike,Barrows and Sons,387.55,Garden,430.24,79.92,71.31,64.91
+
+--- ProductHandling (13 rows) ---
+productID,handlingRequirement
+3,high-value
+3,temperature-controlled
+4,fragile
+5,temperature-controlled
+6,hazardous
+6,high-value
+7,hazardous
+7,temperature-controlled
+8,fragile
+8,hazardous
+9,fragile
+9,high-value
+9,temperature-controlled
+
+--- PurchaseOrder (13 rows) ---
+orderID,orderDate,status
+1,2024-12-24,fully received
+2,2024-10-20,fully received
+3,2024-08-17,fully received
+4,2024-09-05,fully received
+5,2024-07-16,fully received
+6,2024-09-22,fully received
+7,2024-05-07,fully received
+8,2024-08-09,fully received
+9,2024-05-08,fully received
+10,2024-01-05,fully received
+11,2026-03-28,fully received
+12,2026-03-28,fully received
+13,2026-03-28,fully received
+
+--- Route (10 rows) ---
+routeID,totalDistance,status
+1,55,completed
+2,60,in progress
+3,52,planned
+4,85,completed
+5,51,in progress
+6,73,in progress
+7,63,planned
+8,82,planned
+9,66,planned
+10,59,in progress
+
+--- ShipItem (15 rows) ---
+shipmentID,itemSerial#,shippedQty
+7,1,940
+7,2,280
+7,3,119
+7,4,261
+7,5,430
+7,6,309
+7,7,493
+7,8,625
+7,9,935
+7,10,707
+7,11,620
+7,12,438
+7,13,872
+7,14,111
+7,15,289
+
+--- Shipment (13 rows) ---
+shipmentID,exArrDate,acArrDate,shippedDate,originalLocation,trackingNumber,orderID
+1,2025-03-02,2025-05-18,2024-12-23,Canada,715742333,6
+2,2025-06-03,2025-07-17,2025-03-23,Canada,327833431,2
+3,2025-06-26,2025-07-05,2025-05-23,Germany,313043180,8
+4,2025-03-31,2025-11-26,2025-01-23,United Kingdom,539081931,10
+5,2025-06-24,2025-10-25,2025-04-26,United Kingdom,469754695,8
+6,2025-02-05,2025-05-11,2025-01-24,Germany,453738477,9
+7,2025-01-18,2025-08-06,2024-11-21,United Kingdom,280632312,1
+8,2025-02-17,2025-07-15,2024-11-20,United Kingdom,938350907,2
+9,2025-03-28,2025-03-02,2025-02-22,United Kingdom,836330395,4
+10,2025-03-11,2025-06-04,2025-03-08,United Kingdom,381825512,4
+11,2026-04-04,,2026-03-28,Singapore,141184399,11
+12,2026-04-04,,2026-03-28,Singapore,755752096,12
+13,2026-04-04,,2026-03-28,Singapore,218613029,13
+
+--- Shipment_Supplier (18 rows) ---
+shipmentID,supplierID
+2,2
+3,4
+3,10
+5,2
+5,5
+5,6
+5,10
+6,1
+7,1
+7,9
+8,5
+9,2
+10,1
+10,6
+10,8
+11,11
+12,12
+13,13
+
+--- Shipment_Warehouse (18 rows) ---
+shipmentID,warehouseID
+1,9
+2,2
+2,9
+3,2
+3,6
+4,2
+4,6
+4,8
+5,6
+6,8
+8,2
+8,9
+8,10
+9,2
+10,6
+11,8
+12,8
+13,8
+
+--- Staff (30 rows) ---
+staffID,name,type,hireDate
+1,Ed Murray,full-time,2026-01-21
+2,Doug Corwin,full-time,2022-05-31
+3,Cole Runte,full-time,2024-03-05
+4,Dr. Melvin Crona I,contract,2025-04-03
+5,Valentina Collins Jr.,contract,2024-06-14
+6,Cecilia Marvin,part-time,2025-01-01
+7,Chase Harris,part-time,2023-07-23
+8,Terrance O'Conner,full-time,2023-08-28
+9,Marianne Schuster,contract,2023-05-18
+10,Tracey Bednar PhD,part-time,2023-09-23
+11,Dr. Denise Mayer,part-time,2026-02-14
+12,Andres Raynor,contract,2022-06-20
+13,Leland Dickens,contract,2021-06-19
+14,Rogelio Stamm,contract,2022-01-12
+15,Noel Balistreri,part-time,2025-06-12
+16,Francisca Paucek,part-time,2026-02-23
+17,Harvey Carter,full-time,2024-06-04
+18,Mrs. Roscoe Thompson,part-time,2025-06-28
+19,Daisy Ziemann-Willms,contract,2026-03-18
+20,Bobby Lowe PhD,full-time,2025-10-13
+21,Gustavo Cummerata IV,full-time,2025-02-09
+22,Miss Rigoberto Emard,part-time,2022-03-18
+23,Derrick Grimes,full-time,2021-08-15
+24,Judy Schuster,full-time,2021-09-29
+25,Gregory Hintz,part-time,2022-06-07
+26,Mrs. Natasha Johns,full-time,2023-12-23
+27,Ernestine Ondricka V,full-time,2022-05-13
+28,Robert Rogahn,full-time,2021-07-19
+29,Cale Gislason,full-time,2024-03-23
+30,Ellis Runte,contract,2024-07-04
+
+--- Supplier (13 rows) ---
+supplierID,leadTime,paymentTerms,name,country
+1,17,PIA,Kutch - Koelpin,Iceland
+2,25,PIA,Veum - Bartell,Curaçao
+3,11,Net 30,Simonis and Sons,Turkmenistan
+4,29,Net 30,"Ryan, Schroeder and Maggio",Ukraine
+5,29,Net 90,Bernhard - Goldner,Cyprus
+6,13,Due on Receipt,"Hahn, Donnelly and Hyatt",Azerbaijan
+7,24,Net 90,Hirthe - DuBuque,Gibraltar
+8,24,EOM,Spencer - Botsford,Estonia
+9,14,Net 60,Cassin and Sons,Heard Island and McDonald Islands
+10,12,PIA,Prohaska LLC,"Virgin Islands, U.S."
+11,7,30 days,Orchid Logistics Pte Ltd,Singapore
+12,7,30 days,Marina Bay Supply Co,Singapore
+13,7,30 days,Lion City Distribution,Singapore
+
+--- Supply (15 rows) ---
+period,clientID,supplierID,productID
+2026-04-08,4,3,5
+2026-04-30,5,3,1
+2026-06-02,5,3,9
+2026-06-24,10,5,3
+2026-07-15,3,6,6
+2026-07-19,7,8,10
+2026-09-19,8,4,2
+2026-09-20,5,8,6
+2026-09-22,7,5,3
+2026-10-23,8,8,1
+2026-11-12,5,9,8
+2026-11-29,2,4,1
+2027-01-14,6,10,5
+2027-02-08,5,5,5
+2027-03-04,6,8,7
+
+--- Vehicle (10 rows) ---
+vehicleID,licensePlate,vehicleType,capacity
+1,OV22IFA,truck,1737
+2,PQ58PXK,van,1339
+3,ZN12OEH,van,1567
+4,IM69SLQ,truck,1575
+5,HG51GRZ,refrigerated truck,1583
+6,XH32CSD,refrigerated truck,1500
+7,MH23YTF,truck,1444
+8,WZ15SOZ,van,1703
+9,DZ31UTQ,truck,1924
+10,UY25JQZ,refrigerated truck,1716
+
+--- Warehouse (10 rows) ---
+warehouseID,address,size,temperature,security
+1,Thailand,11862.89,refrigerated,high
+2,Thailand,13584.18,refrigerated,medium
+3,Thailand,6923.67,ambient,low
+4,United States of America,14449.84,refrigerated,high
+5,Thailand,9294.21,frozen,high
+6,United States of America,5748.65,refrigerated,high
+7,United States of America,9676.62,ambient,high
+8,Singapore,6489.23,frozen,low
+9,United States of America,5985.26,refrigerated,low
+10,United States of America,5234.57,refrigerated,high
+
+--- Zone (10 rows) ---
+warehouseID,location,code
+1,97612,receiving
+2,39849,packing area
+3,21431,receiving
+4,14881,bulk storage
+5,4614,picking area
+6,64874,bulk storage
+7,76961,bulk storage
+8,47698,picking area
+9,41046,packing area
+10,9919,picking area
+
