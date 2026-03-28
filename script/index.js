@@ -10,6 +10,7 @@ const { Employee } = require("./model/Employee");
 const { Inventory } = require("./model/Inventory");
 const { InventoryMovement } = require("./model/InventoryMovement");
 const { Item } = require("./model/Item");
+const { Staff } = require("./model/Staff");
 const { OrderItem } = require("./model/OrderItem");
 const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
@@ -36,6 +37,7 @@ const models = {
     InventoryMovement,
     Item,
     OrderItem,
+    Staff,
     Product,
     ProductHandling,
     PurchaseOrder,
@@ -51,11 +53,41 @@ const models = {
     Zone,
 }
 
+async function runInsertion(tableName, num) {
+    const model = models[tableName];
+    if (!model) {
+        throw new Error(`Table '${tableName}' does not exist`);
+    }
+
+    if (isNaN(num) || num <= 0) {
+        throw new Error(`Invalid number of records: ${num}`);
+    }
+
+    await sequelize.sync();
+    await insert(model, tableName, num);
+    console.log(`Inserted ${num} records into ${tableName}`);
+}
+
 async function main(){
     const tables = Object.keys(models);
     console.log(`All Table: ${tables.join(", ")}`);
 
-    let name = null
+    const args = process.argv.slice(2);
+    if (args.length >= 2) {
+        const [name, countStr] = args;
+        const num = parseInt(countStr, 10);
+        try {
+            await runInsertion(name, num);
+        } catch (error) {
+            console.error(`Process terminated unexpectedly: ${error.parent || error.message}`);
+            process.exit(-1);
+        } finally {
+            process.exit(0);
+        }
+        return;
+    }
+
+    let name = null;
     let model = null;
     while(model == null){
         name = await question(`Enter table name: `);
@@ -71,11 +103,9 @@ async function main(){
     }
 
     try {
-        await sequelize.sync();
-        await insert(model, name, num);
-        console.log(`Inserted ${num} records into ${name}`);
+        await runInsertion(name, num);
     } catch (error) {
-        console.error(`Process terminated unexpectedly: ${error.parent || error}`);
+        console.error(`Process terminated unexpectedly: ${error.parent || error.message}`);
         process.exit(-1);
     } finally {
         rl.close();

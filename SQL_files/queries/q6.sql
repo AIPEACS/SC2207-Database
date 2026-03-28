@@ -1,4 +1,3 @@
-
 (
 	SELECT Supplier.supplierID AS supplierID, Supplier.name AS name
 	FROM Supplier
