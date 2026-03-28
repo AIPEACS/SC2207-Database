@@ -1,3 +1,4 @@
+const { arrayShuffle } = require("array-shuffle");
 const { sequelize } = require("./init");
 const { randomElement } = require("./util");
 
@@ -30,7 +31,7 @@ async function createParent(parentModel, parentName, records, idName){
 async function assignFK(fkModel, records) {
     const keys = fkModel.primaryKeyAttributes;
     const fkrecords = await fkModel.findAll();
-
+    
     records.forEach(record => {
         const fkrecord = randomElement(fkrecords);
         keys.forEach(key => {
@@ -51,9 +52,23 @@ async function assignUniqueFK(fkModelName, modelName, records, fkName, nullProba
     });
 }
 
+async function assignQueryResult(records, columns, query) {
+    const [queryRecords, _] = await sequelize.query(query);
+
+    if(queryRecords.length < records.length) throw Error("Insufficient records");
+    arrayShuffle(queryRecords);
+
+    for(let i=0; i<records.length; i++){
+        Object.entries(columns).forEach(([k, v]) => {
+            records[i][k] = queryRecords[i][v];
+        });
+    }
+}
+
 module.exports = {
     insert,
     createParent,
     assignFK,
     assignUniqueFK,
+    assignQueryResult,
 }

@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require('../init');
-const { randomDefaultDate, randomElement } = require("../util");
+const { randomDefaultDate } = require("../util");
 
 const status = ["draft", "submitted", "confirmed", "partially received", "fully received", "cancelled"];
 
@@ -25,8 +25,8 @@ const PurchaseOrder = sequelize.define('PurchaseOrder', {
 
 function generateRecord(){
     return {
-        orderDate: randomDefaultDate(),
-        status: randomElement(status),
+        orderDate: randomDefaultDate({type: "order"}),
+        status: "fully received",
     }
 }
 

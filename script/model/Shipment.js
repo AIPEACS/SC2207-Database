@@ -42,9 +42,9 @@ Shipment.belongsTo(PurchaseOrder, {foreignKey: "orderID"});
 const trackingNumberRange = [100000000, 999999999];
 
 function generateRecord(){
-    const acArrDate = randomDefaultDate();
-    const exArrDate = faker.date.recent({ days: 365, refDate: acArrDate });
-    const shippedDate = faker.date.recent({ days: 365, refDate: exArrDate });
+    const acArrDate = randomDefaultDate({type: "actArrival"});
+    const exArrDate = randomDefaultDate({type: "expArrival"});
+    const shippedDate = faker.date.recent({ days: 100, refDate: exArrDate });
     
     return {
         exArrDate,

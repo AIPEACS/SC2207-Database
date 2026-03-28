@@ -4,11 +4,13 @@ const { sequelize } = require("./init")
 
 const { insert } = require("./insert");
 const { Client } = require("./model/Client");
+const { Delivery } = require("./model/Delivery");
 const { Driver } = require("./model/Driver");
 const { Employee } = require("./model/Employee");
 const { Inventory } = require("./model/Inventory");
 const { InventoryMovement } = require("./model/InventoryMovement");
 const { Item } = require("./model/Item");
+const { OrderItem } = require("./model/OrderItem");
 const { Product } = require("./model/Product");
 const { ProductHandling } = require("./model/ProductHandling");
 const { PurchaseOrder } = require("./model/PurchaseOrder");
@@ -21,19 +23,27 @@ const { Warehouse } = require("./model/Warehouse");
 const { Zone } = require("./model/Zone");
 
 const { rl, question } = require("./cli");
+const { ShipItem } = require("./model/ShipItem");
+const { Shipment_Supplier } = require("./model/ShipmentSupplier");
+const { Shipment_Warehouse } = require("./model/Shipment_Warehouse");
 
 const models = {
     Client,
+    Delivery,
     Driver,
     Employee,
     Inventory,
     InventoryMovement,
     Item,
+    OrderItem,
     Product,
     ProductHandling,
     PurchaseOrder,
     Route,
+    ShipItem,
     Shipment,
+    Shipment_Supplier,
+    Shipment_Warehouse,
     Supplier,
     Supply,
     Vehicle,
@@ -47,10 +57,10 @@ async function main(){
 
     let name = null
     let model = null;
-    while(model === null){
+    while(model == null){
         name = await question(`Enter table name: `);
         model = models[name];
-        if(model === null) console.error(`Table '${name}' doesn't exists`);
+        if(model == null) console.error(`Table '${name}' doesn't exists`);
     }
 
     let num = NaN;
