@@ -47,7 +47,8 @@ CREATE TABLE ProductHandling
 (
   productID INT NOT NULL,
   handlingRequirement VARCHAR(255) NOT NULL,
-  FOREIGN KEY (productID) REFERENCES Product(productID),
+  FOREIGN KEY (productID) REFERENCES Product(productID)
+    ON DELETE CASCADE,
   PRIMARY KEY (productID, handlingRequirement)
 );
 GO
@@ -81,9 +82,12 @@ CREATE TABLE Supply
   clientID INT NOT NULL,
   supplierID INT NOT NULL,
   productID INT NOT NULL,
-  FOREIGN KEY (clientID) REFERENCES Client(clientID),
-  FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID),
-  FOREIGN KEY (productID) REFERENCES Product(productID),
+  FOREIGN KEY (clientID) REFERENCES Client(clientID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (productID) REFERENCES Product(productID) 
+    ON DELETE CASCADE,
   PRIMARY KEY (period, clientID, supplierID, productID)
 );
 GO
@@ -117,7 +121,8 @@ CREATE TABLE Zone
   warehouseID INT NOT NULL,
   location VARCHAR(255) NOT NULL,
   code VARCHAR(255) NOT NULL,
-  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
+  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
+    ON DELETE CASCADE,
   PRIMARY KEY (warehouseID, location)
 );
 GO
@@ -140,9 +145,12 @@ CREATE TABLE Inventory
   -- saleQty = handQty - reservedQty
   orderedQty INT NOT NULL,
   location VARCHAR(255) NOT NULL,
-  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
-  FOREIGN KEY (productID) REFERENCES Product(productID),
-  FOREIGN KEY (clientID) REFERENCES Client(clientID),
+  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (productID) REFERENCES Product(productID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (clientID) REFERENCES Client(clientID)
+    ON DELETE CASCADE,
   PRIMARY KEY (warehouseID, productID, clientID, serial#)
 );
 GO
@@ -161,11 +169,9 @@ CREATE TABLE InventoryMovement
   movement VARCHAR(255) NOT NULL,
   reason VARCHAR(255) NOT NULL,
   timestamp DATETIME2(7) NOT NULL,
-  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
-  FOREIGN KEY (productID) REFERENCES Product(productID),
-  FOREIGN KEY (clientID) REFERENCES Client(clientID),
   FOREIGN KEY (warehouseID, productID, clientID, serial#)
-    REFERENCES Inventory(warehouseID, productID, clientID, serial#),
+    REFERENCES Inventory(warehouseID, productID, clientID, serial#)
+    ON DELETE CASCADE,
   PRIMARY KEY (warehouseID, productID, clientID, serial#, timestamp)
 );
 GO
@@ -183,6 +189,7 @@ CREATE TABLE Item
   itemSerial# INT IDENTITY(1,1) PRIMARY KEY,
   productID INT NOT NULL,
   FOREIGN KEY (productID) REFERENCES Product(productID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -213,8 +220,10 @@ CREATE TABLE PurchaseOrder_Client
   orderID INT NOT NULL,
   clientID INT NOT NULL,
   PRIMARY KEY (orderID, clientID),
-  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID),
+  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
+    ON DELETE CASCADE,
   FOREIGN KEY (clientID) REFERENCES Client(clientID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -229,8 +238,10 @@ CREATE TABLE PurchaseOrder_Supplier
   orderID INT NOT NULL,
   supplierID INT NOT NULL,
   PRIMARY KEY (orderID, supplierID),
-  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID),
+  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
+    ON DELETE CASCADE,
   FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -249,8 +260,10 @@ CREATE TABLE OrderItem
   unitPrice DECIMAL(38, 2) NOT NULL,
   orderedQty INT NOT NULL,
   PRIMARY KEY (orderID, itemSerial#),
-  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID),
+  FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
+    ON DELETE CASCADE,
   FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
+    ON DELETE CASCADE
 );
 GO
 
@@ -272,6 +285,7 @@ CREATE TABLE Shipment
   trackingNumber VARCHAR(255) UNIQUE NOT NULL,
   orderID INT NOT NULL,
   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -288,8 +302,10 @@ CREATE TABLE ShipItem
   itemSerial# INT NOT NULL,
   shippedQty INT NOT NULL,
   PRIMARY KEY (shipmentID, itemSerial#),
-  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID),
+  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID)
+    ON DELETE CASCADE,
   FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
+    ON DELETE CASCADE
 );
 GO
 
@@ -304,8 +320,10 @@ CREATE TABLE Shipment_Supplier
   shipmentID INT NOT NULL,
   supplierID INT NOT NULL,
   PRIMARY KEY (shipmentID, supplierID),
-  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID),
+  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID)
+    ON DELETE CASCADE,
   FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -320,8 +338,10 @@ CREATE TABLE Shipment_Warehouse
   shipmentID INT NOT NULL,
   warehouseID INT NOT NULL,
   PRIMARY KEY (shipmentID, warehouseID),
-  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID),
+  FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID)
+    ON DELETE CASCADE,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -353,8 +373,10 @@ CREATE TABLE Employee
   staffID INT NOT NULL PRIMARY KEY,
   certification VARCHAR(255),
   warehouseID INT NOT NULL,
-  FOREIGN KEY (staffID) REFERENCES Staff(staffID) ON DELETE CASCADE,
+  FOREIGN KEY (staffID) REFERENCES Staff(staffID) 
+    ON DELETE CASCADE,
   FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -389,8 +411,10 @@ CREATE TABLE Driver
   licenseNumber VARCHAR(255) NOT NULL UNIQUE,
   licenseExpiration DATE NOT NULL,
   vehicleID INT,
-  FOREIGN KEY (staffID) REFERENCES Staff(staffID) ON DELETE CASCADE,
-  FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID) ON DELETE SET NULL
+  FOREIGN KEY (staffID) REFERENCES Staff(staffID) 
+    ON DELETE CASCADE,
+  FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID) 
+    ON DELETE SET NULL
 );
 GO
 
@@ -424,6 +448,7 @@ CREATE TABLE Stop
   actArrTime DATETIME,
   PRIMARY KEY (routeID, sequence),
   FOREIGN KEY (routeID) REFERENCES Route(routeID)
+    ON DELETE CASCADE
 );
 GO
 
@@ -441,9 +466,13 @@ CREATE TABLE Delivery
   shipmentID INT NOT NULL,
   date DATETIME NOT NULL,
   PRIMARY KEY (routeID, vehicleID, warehouseID, shipmentID, date),
-  FOREIGN KEY (routeID) REFERENCES Route(routeID),
-  FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID),
-  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID),
+  FOREIGN KEY (routeID) REFERENCES Route(routeID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID)
+    ON DELETE CASCADE,
+  FOREIGN KEY (warehouseID) REFERENCES Warehouse(warehouseID)
+    ON DELETE CASCADE,
   FOREIGN KEY (shipmentID) REFERENCES Shipment(shipmentID)
+    ON DELETE CASCADE
 );
 GO

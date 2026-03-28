@@ -1,15 +1,33 @@
+SELECT DISTINCT ss.supplierID, w.address
+FROM Shipment_Supplier ss
+LEFT JOIN Shipment_Warehouse sw
+	ON ss.shipmentID = sw.shipmentID
+LEFT JOIN Warehouse w 
+	ON sw.warehouseID = w.warehouseID
+WHERE w.address = 'Singapore'
+
+SELECT DISTINCT ss.supplierID, w.address
+FROM Shipment_Supplier ss
+LEFT JOIN Shipment_Warehouse sw
+	ON ss.shipmentID = sw.shipmentID
+LEFT JOIN Warehouse w 
+	ON sw.warehouseID = w.warehouseID
+WHERE w.address <> 'Singapore'
+
 (
-	SELECT DISTINCT sr.supplierID
-	FROM Supplier sr
-	JOIN Shipment_Supplier shsr ON sr.supplierID = shsr.supplierID
-	JOIN Shipment_Warehouse shw ON shsr.shipmentID = shw.shipmentID
-	JOIN Warehouse w ON w.warehouseID = shw.warehouseID
+	SELECT DISTINCT ss.supplierID
+	FROM Shipment_Supplier ss
+	LEFT JOIN Shipment_Warehouse sw
+		ON ss.shipmentID = sw.shipmentID
+	LEFT JOIN Warehouse w 
+		ON sw.warehouseID = w.warehouseID
 	WHERE w.address = 'Singapore'
 ) EXCEPT (
-	SELECT DISTINCT sr.supplierID
-	FROM Supplier sr
-	JOIN Shipment_Supplier shsr ON sr.supplierID = shsr.supplierID
-	JOIN Shipment_Warehouse shw ON shsr.shipmentID = shw.shipmentID
-	JOIN Warehouse w ON w.warehouseID = shw.warehouseID
+	SELECT DISTINCT ss.supplierID
+	FROM Shipment_Supplier ss
+	LEFT JOIN Shipment_Warehouse sw
+		ON ss.shipmentID = sw.shipmentID
+	LEFT JOIN Warehouse w 
+		ON sw.warehouseID = w.warehouseID
 	WHERE w.address <> 'Singapore'
 )
