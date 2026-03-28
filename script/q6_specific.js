@@ -38,7 +38,7 @@ const supplierNames = [
 
 const warehouseSeed = [
     { address: 'Singapore', size: 12000, temperature: 'ambient', security: 'high' },
-    { address: 'Singapore', size: 8500, temperature: 'refrigerated', security: 'medium' },
+    { address: 'United States of America', size: 11000, temperature: 'ambient', security: 'high' },
     { address: 'Thailand', size: 15000, temperature: 'ambient', security: 'low' },
 ];
 
