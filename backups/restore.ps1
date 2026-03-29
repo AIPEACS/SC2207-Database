@@ -3,24 +3,33 @@
 
 function Read-BackupFileName {
     $currentDir = Get-Location
+    $files = Get-ChildItem -Path $currentDir -Filter 'backup-*.csv' -File -ErrorAction SilentlyContinue | Sort-Object Name
+
+    if (-not $files) {
+        Throw "No backup files found in $currentDir"
+    }
+
     while ($true) {
-        Write-Host "Available backup files in $currentDir (pattern backup-*.csv):"
-        Get-ChildItem -Path $currentDir -Filter 'backup-*.csv' -File -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "  $($_.Name)"
+        Write-Host "Available backup files in ${currentDir}:"
+        $index = 0
+        foreach ($file in $files) {
+            $index++
+            Write-Host "  [$index] $($file.Name)"
         }
 
-        $fileName = Read-Host 'Enter backup file name (e.g. backup-20260329-123456.csv)'
-        if ([string]::IsNullOrWhiteSpace($fileName)) {
-            Write-Warning 'Please enter a file name.'
+        $input = Read-Host 'Enter number of backup to restore (e.g. 1)'
+        if ([string]::IsNullOrWhiteSpace($input) -or -not ($input -as [int])) {
+            Write-Warning 'Please enter a valid number.'
             continue
         }
 
-        $fullPath = Join-Path -Path $currentDir -ChildPath $fileName
-        if (Test-Path -Path $fullPath) {
-            return $fullPath
+        $selected = [int]$input
+        if ($selected -lt 1 -or $selected -gt $files.Count) {
+            Write-Warning "Invalid choice $selected. Enter a number between 1 and $($files.Count)."
+            continue
         }
 
-        Write-Warning "File not found: $fileName. Please choose an existing backup file."
+        return $files[$selected - 1].FullName
     }
 }
 
@@ -32,28 +41,29 @@ function Restore-BackupFromCsv {
 
     $lines = Get-Content -Path $BackupPath -ErrorAction Stop
 
-    $sections = @()
+    $sections = @{}
     $currentTable = $null
     $currentRows = @()
 
     foreach ($line in $lines) {
         if ($line -match '^---\s*([^\(]+?)\s*(?:\(\d+\srows\))?\s*---$') {
-            if ($currentTable) {
-                $sections += [PSCustomObject]@{ Table = $currentTable; Rows = $currentRows }
+            if ($currentTable -and $currentRows.Count -gt 0) {
+                $sections[$currentTable] = $currentRows
             }
-
             $currentTable = $matches[1].Trim()
             $currentRows = @()
-        } elseif ($currentTable) {
+            continue
+        }
+        if (-not $line.Trim()) { continue }
+        if ($currentTable) {
             $currentRows += $line
         }
     }
-
-    if ($currentTable) {
-        $sections += [PSCustomObject]@{ Table = $currentTable; Rows = $currentRows }
+    if ($currentTable -and $currentRows.Count -gt 0) {
+        $sections[$currentTable] = $currentRows
     }
 
-    if (-not $sections) {
+    if (-not $sections.Keys.Count) {
         Throw "No table sections found in backup file $BackupPath"
     }
 
@@ -64,46 +74,56 @@ function Restore-BackupFromCsv {
     $connection.Open()
 
     try {
-        foreach ($section in $sections) {
-            $tableName = $section.Table
-            if (-not $tableName) { continue }
-            $rows = $section.Rows
+        # Disable FK constraints to allow any order
+        $disableCmd = $connection.CreateCommand()
+        $disableCmd.CommandText = "EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'"
+        $disableCmd.ExecuteNonQuery() | Out-Null
 
-            if (-not $rows -or $rows.Count -lt 1) {
-                Write-Host "[INFO] Skipping table '$tableName' (no data)"
+        $identityTables = @('Client','Product','Supplier','Warehouse','Item','PurchaseOrder','Route','Shipment','Staff','Vehicle')
+        $restoreOrder = @(
+            'Client', 'Supplier', 'Warehouse', 'Product', 'Route', 'Vehicle', 'Staff', 'Employee', 'Driver', 'Zone',
+            'Item', 'PurchaseOrder', 'Shipment', 'Shipment_Supplier', 'Shipment_Warehouse', 'Supply',
+            'Inventory', 'InventoryMovement', 'OrderItem', 'ShipItem', 'ProductHandling'
+        )
+
+        foreach ($tableName in $restoreOrder) {
+            if (-not $sections.ContainsKey($tableName)) {
+                Write-Host "[INFO] Skipping missing table section $tableName"
+                continue
+            }
+
+            $rows = $sections[$tableName]
+            if (-not $rows -or $rows.Count -lt 2) {
+                Write-Host "[INFO] Skipping empty table section $tableName"
                 continue
             }
 
             $csvText = $rows -join "`n"
             $records = $csvText | ConvertFrom-Csv -ErrorAction Stop
-            if (-not $records) {
-                Write-Host "[INFO] Skipping table '$tableName' (no parsed rows)"
-                continue
-            }
 
             Write-Host "[INFO] Restoring table $tableName ($($records.Count) rows)"
 
-            $command = $connection.CreateCommand()
-            $command.CommandText = "TRUNCATE TABLE [$tableName]"
-            try {
-                $command.ExecuteNonQuery() | Out-Null
-            } catch {
-                Write-Warning "Could not truncate $tableName; attempting DELETE instead. $_"
-                $command.CommandText = "DELETE FROM [$tableName]"
-                $command.ExecuteNonQuery() | Out-Null
+            $cmd = $connection.CreateCommand()
+            $cmd.CommandText = "DELETE FROM [$tableName]"
+            $cmd.ExecuteNonQuery() | Out-Null
+
+            $isIdentity = $identityTables -contains $tableName
+            if ($isIdentity) {
+                $idOnCmd = $connection.CreateCommand()
+                $idOnCmd.CommandText = "SET IDENTITY_INSERT [$tableName] ON"
+                $idOnCmd.ExecuteNonQuery() | Out-Null
             }
 
             $columns = $records[0].PSObject.Properties.Name
-            $colsQue = $columns -join ', '
-            $params = $columns | ForEach-Object { "@$_" }
-            $paramList = $params -join ', '
-
-            $insertSql = "INSERT INTO [$tableName] ($colsQue) VALUES ($paramList)"
-            $insertCmd = $connection.CreateCommand()
-            $insertCmd.CommandText = $insertSql
+            $colsSql = $columns -join ', '
 
             foreach ($record in $records) {
-                $insertCmd.Parameters.Clear()
+                $paramNames = $columns | ForEach-Object { "@$_" }
+                $paramList = $paramNames -join ', '
+
+                $insertCmd = $connection.CreateCommand()
+                $insertCmd.CommandText = "INSERT INTO [$tableName] ($colsSql) VALUES ($paramList)"
+
                 foreach ($col in $columns) {
                     $value = $record.$col
                     if ($null -eq $value -or $value -eq '') {
@@ -113,17 +133,23 @@ function Restore-BackupFromCsv {
                     }
                 }
 
-                try {
-                    $insertCmd.ExecuteNonQuery() | Out-Null
-                } catch {
-                    Write-Warning "Insert failed for table '$tableName': $($_.Exception.Message)"
-                    break
-                }
+                $insertCmd.ExecuteNonQuery() | Out-Null
+            }
+
+            if ($isIdentity) {
+                $idOffCmd = $connection.CreateCommand()
+                $idOffCmd.CommandText = "SET IDENTITY_INSERT [$tableName] OFF"
+                $idOffCmd.ExecuteNonQuery() | Out-Null
             }
 
             Write-Host "[OK] Table $tableName restored ($($records.Count) rows)."
         }
-    } finally {
+
+        $enableCmd = $connection.CreateCommand()
+        $enableCmd.CommandText = "EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'"
+        $enableCmd.ExecuteNonQuery() | Out-Null
+    }
+    finally {
         $connection.Close()
     }
 
