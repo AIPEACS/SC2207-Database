@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 -- To verify results only
 SELECT 
     warehouseID,
@@ -5,7 +8,7 @@ SELECT
     SUM(orderedQty * unitPrice) AS business
 FROM OrderItem
 GROUP BY warehouseID, clientID
-ORDER BY warehouseID ASC, business DESC;
+ORDER BY business DESC, warehouseID ASC;
 
 -- Required query
 WITH Business AS (

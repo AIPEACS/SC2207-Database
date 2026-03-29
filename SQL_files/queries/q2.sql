@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 WITH Business(SingaporeBusiness, LABusiness) AS (
     SELECT 
         SUM(CASE WHEN w.address = 'Singapore' THEN oi.orderedQty * oi.unitPrice END) AS SingaporeBusiness,

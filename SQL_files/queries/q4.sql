@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 -- To verify results only
 SELECT o.orderDate AS orderDate, CAST(d.date AS DATE) AS deliveryDate, DATEDIFF(MONTH, o.orderDate, d.date) as monthDiff
 FROM Delivery d

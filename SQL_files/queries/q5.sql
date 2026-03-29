@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 -- To verify results only
 SELECT DISTINCT s.supplierID, w.address
 FROM Supply s

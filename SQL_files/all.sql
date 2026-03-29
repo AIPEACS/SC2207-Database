@@ -1,5 +1,7 @@
 -- all.sql: return all table rows for every table in the schema
 -- Run this in your SQL Server client to inspect every table.
+USE [<DATABASE>];
+GO
 
 SELECT * FROM Client;
 SELECT * FROM Delivery;

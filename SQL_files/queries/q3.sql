@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 WITH MonthCount AS (
     SELECT
         YEAR(po.orderDate) AS year,
