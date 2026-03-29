@@ -2,7 +2,8 @@
 $ErrorActionPreference = 'Stop'
 
 $baseDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$outDir = Join-Path $baseDir 'query_result'
+$queriesDir = Join-Path $baseDir 'SQL_files\queries'
+$outDir = Join-Path $queriesDir 'query_result'
 if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out-Null }
 
 $server = '<HOST>'
@@ -64,7 +65,7 @@ function Export-QueryToCsv {
 $connectionString = "Server=$server;Database=$database;User Id=$user;Password=$password;Encrypt=False;TrustServerCertificate=True;"
 
 for ($i = 1; $i -le 7; $i++) {
-    $sqlFile = Join-Path $baseDir "q${i}.sql"
+    $sqlFile = Join-Path $queriesDir "q${i}.sql"
     $outFile = Join-Path $outDir "q${i}.csv"
 
     if (-not (Test-Path $sqlFile)) {
@@ -78,4 +79,17 @@ for ($i = 1; $i -le 7; $i++) {
     Write-Host "[OK] Created $outFile"
 }
 
+Write-Host "[INFO] Exporting ALL table data to ALL.csv..."
+if (Get-Command node -ErrorAction SilentlyContinue) {
+    $exportProcess = Start-Process -FilePath node -ArgumentList 'script\export_all.js' -NoNewWindow -PassThru -Wait
+    if ($exportProcess.ExitCode -ne 0) {
+        Write-Warning "Warning: export_all.js failed with exit code $($exportProcess.ExitCode)."
+    } else {
+        Write-Host "[OK] ALL.csv generated."
+    }
+} else {
+    Write-Warning "Node.js not found; cannot run export_all.js. Skipping ALL.csv generation."
+}
+
 Write-Host "[SUCCESS] q1..q7 queries exported to $outDir"
+

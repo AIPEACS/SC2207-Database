@@ -1,3 +1,4 @@
 *.pdf
 !Lab Manual 2025_2026 Sem 2.pdf
 node_modules
+*.bak
