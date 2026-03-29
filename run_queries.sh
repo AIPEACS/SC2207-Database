@@ -21,6 +21,7 @@ for i in {1..7}; do
   fi
 
   echo "[INFO] Running q$i -> $outfile"
+  # sqlcmd understands USE/GO directly when using -i and -d
   sqlcmd -S "$SERVER" -U "$USER" -P "$PASSWORD" -d "$DATABASE" -i "$sqlfile" -s"," -W -o "$outfile"
   echo "[OK] Created $outfile"
 done

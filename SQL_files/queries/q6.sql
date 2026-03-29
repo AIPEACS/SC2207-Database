@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 WITH SingaporeProduct(productID, clientID) AS (
     SELECT DISTINCT i.productID, i.clientID
     FROM Inventory i

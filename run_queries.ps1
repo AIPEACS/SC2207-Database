@@ -74,7 +74,11 @@ for ($i = 1; $i -le 7; $i++) {
     }
 
     Write-Host "[INFO] Running q$i -> $outFile"
-    $sqlText = Get-Content -Path $sqlFile -Raw
+    $sqlTextRaw = Get-Content -Path $sqlFile -Raw
+    # Remove USE and GO lines that can interfere with ADO.NET execution
+    $sqlText = $sqlTextRaw -replace '(?mi)^\s*USE\s+\S+\s*;?', ''
+    $sqlText = $sqlText -replace '(?mi)^\s*GO\s*$', ''
+
     Export-QueryToCsv -ConnectionString $connectionString -SqlText $sqlText -OutPath $outFile
     Write-Host "[OK] Created $outFile"
 }

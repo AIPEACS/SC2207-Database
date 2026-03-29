@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 -- GETDATE(): TSQL today
 -- YEAR(Date): TSQL to get a year form a date
 SELECT TOP 3

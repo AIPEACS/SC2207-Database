@@ -1,10 +1,13 @@
+USE [<DATABASE>];
+GO
+
 SELECT 
     warehouseID,
     clientID,
     SUM(orderedQty * unitPrice) AS business
 FROM OrderItem
 GROUP BY warehouseID, clientID
-ORDER BY warehouseID ASC, business DESC;
+ORDER BY business DESC, warehouseID ASC;
 
 WITH Business AS (
     SELECT 

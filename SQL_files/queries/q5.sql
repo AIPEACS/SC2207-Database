@@ -1,3 +1,6 @@
+USE [<DATABASE>];
+GO
+
 SELECT DISTINCT s.supplierID, w.address
 FROM Supply s
 INNER JOIN Inventory i
