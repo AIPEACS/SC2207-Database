@@ -269,7 +269,6 @@ GO
 CREATE TABLE OrderItem
 (
   orderID INT NOT NULL,
-  itemSerial# INT NOT NULL,
   serial# INT NOT NULL,
   productID INT NOT NULL,
   clientID INT NOT NULL,
@@ -278,11 +277,9 @@ CREATE TABLE OrderItem
   exDelDate DATE NOT NULL,
   unitPrice DECIMAL(38, 2) NOT NULL,
   orderedQty INT NOT NULL,
-  PRIMARY KEY (orderID, itemSerial#, serial#, productID, clientID, warehouseID, supplierID),
+  PRIMARY KEY (orderID, serial#, productID, clientID, warehouseID, supplierID),
   FOREIGN KEY (orderID) REFERENCES PurchaseOrder(orderID)
     ON DELETE CASCADE,
-  FOREIGN KEY (itemSerial#) REFERENCES Item(itemSerial#)
-    ON DELETE NO ACTION,
   FOREIGN KEY (warehouseID, productID, clientID, serial#) REFERENCES Inventory(warehouseID, productID, clientID, serial#)
     ON DELETE CASCADE,
   FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)

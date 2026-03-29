@@ -5,6 +5,9 @@ WITH Business(SingaporeBusiness, LABusiness) AS (
     FROM OrderItem oi
     INNER JOIN Warehouse w
         ON oi.warehouseID = w.warehouseID
+    INNER JOIN PurchaseOrder po
+        ON oi.orderID = po.orderID
+    WHERE po.status IN ('confirmed', 'partially recieved', 'fully received')
 )
 SELECT 
     SingaporeBusiness,

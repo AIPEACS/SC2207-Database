@@ -80,14 +80,6 @@ const { Supplier } = require("./Supplier");
 // }
 
 const OrderItem = sequelize.define('OrderItem', {
-    "itemSerial#": {
-        type: DataTypes.INTEGER,
-        primaryKey: true, 
-        references: {
-            model: Item, 
-            key: 'itemSerial#' 
-        }
-    },
     orderID: {
         type: DataTypes.INTEGER,
         primaryKey: true, 
@@ -166,7 +158,6 @@ function generateRecord(){
 OrderItem.generateRecord = generateRecord;
 OrderItem.insertRecords = async (items) => {
     await assignQueryResult(items, {
-        "itemSerial#": "itemSerial#",
         "orderID": "orderID",
         "serial#": "serial#",
         "productID": "productID",

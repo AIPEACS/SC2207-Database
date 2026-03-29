@@ -1,3 +1,4 @@
+-- To verify results only
 SELECT 
     warehouseID,
     clientID,
@@ -6,12 +7,16 @@ FROM OrderItem
 GROUP BY warehouseID, clientID
 ORDER BY warehouseID ASC, business DESC;
 
+-- Required query
 WITH Business AS (
     SELECT 
         warehouseID,
         clientID,
         SUM(orderedQty * unitPrice) AS business
-    FROM OrderItem
+    FROM OrderItem i
+    INNER JOIN PurchaseOrder o
+        ON i.orderID = o.orderID
+    WHERE o.status IN ('confirmed', 'partially recieved', 'fully received')
     GROUP BY warehouseID, clientID
 ),
 Ranked AS (

@@ -1,3 +1,4 @@
+-- To verify results only
 SELECT DISTINCT s.supplierID, w.address
 FROM Supply s
 INNER JOIN Inventory i
@@ -5,6 +6,7 @@ INNER JOIN Inventory i
 INNER JOIN Warehouse w
     ON i.warehouseID = w.warehouseID;
 
+-- Required query
 WITH SupplyAddress(supplierID, address) AS (
     SELECT DISTINCT s.supplierID, w.address
     FROM Supply s
