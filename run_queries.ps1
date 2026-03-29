@@ -86,10 +86,15 @@ if (Get-Command node -ErrorAction SilentlyContinue) {
         Write-Warning "Warning: export_all.js failed with exit code $($exportProcess.ExitCode)."
     } else {
         Write-Host "[OK] ALL.csv generated."
+
+      # Backup ALL.csv with timestamp
+      $backupDir = Join-Path $baseDir 'backups'
+      if (-not (Test-Path $backupDir)) { New-Item -ItemType Directory -Path $backupDir | Out-Null }
+      $timestamp = (Get-Date).ToString('yyyyMMdd-HHmmss')
+      $backupPath = Join-Path $backupDir "backup-$timestamp.csv"
+      Copy-Item -Path (Join-Path $baseDir 'ALL.csv') -Destination $backupPath -Force
+      Write-Host "[OK] ALL.csv backed up to $backupPath"
     }
 } else {
     Write-Warning "Node.js not found; cannot run export_all.js. Skipping ALL.csv generation."
 }
-
-Write-Host "[SUCCESS] q1..q7 queries exported to $outDir"
-
