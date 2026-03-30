@@ -13,7 +13,8 @@
     -- INNER JOIN Client c
     --     ON oi.clientID = c.clientID
     -- WHERE s.acArrDate IS NOT NULL;
-
+USE [<DATABASE>];
+GO
 WITH DeliveryPerformance AS (
     SELECT
         c.clientID,
@@ -21,11 +22,11 @@ WITH DeliveryPerformance AS (
         w.address AS region,
         COUNT(*) AS totalDeliveries,
         SUM(CASE 
-            WHEN oi.exDelDate <= d.date THEN 1 
+            WHEN oi.exDelDate >= d.date THEN 1 
             ELSE 0 
         END) AS onTimeDeliveries,
         SUM(CASE 
-            WHEN oi.exDelDate > d.date THEN 1 
+            WHEN oi.exDelDate < d.date THEN 1 
             ELSE 0 
         END) AS lateDeliveries
     FROM Delivery d
@@ -42,6 +43,7 @@ WITH DeliveryPerformance AS (
     GROUP BY c.clientID, c.companyName, w.address
 )
 SELECT
+    clientID,
     companyName,
     region,
     totalDeliveries,
