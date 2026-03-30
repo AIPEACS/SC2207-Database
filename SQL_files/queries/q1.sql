@@ -8,7 +8,7 @@ SELECT
     SUM(orderedQty * unitPrice) AS business
 FROM OrderItem
 GROUP BY warehouseID, clientID
-ORDER BY business DESC, warehouseID ASC;
+ORDER BY warehouseID ASC, business DESC;
 
 -- Required query
 WITH Business AS (
