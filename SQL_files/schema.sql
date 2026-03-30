@@ -215,6 +215,7 @@ GO
   Primary key: (orderID, clientID)
   Dependency: None
 */
+/*
 CREATE TABLE PurchaseOrder_Client
 (
   orderID INT NOT NULL,
@@ -226,6 +227,7 @@ CREATE TABLE PurchaseOrder_Client
     ON DELETE CASCADE
 );
 GO
+*/
 
 /*
   PurchaseOrder_Supplier(orderID, supplierID)
