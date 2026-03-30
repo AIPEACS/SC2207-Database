@@ -9,3 +9,12 @@ This repository contains the materials for the SC2207 Database and SQL course la
 - **SQL version**: T-SQL
 - **Database Engine**: MSSQL (Azure Data Studio)
 
+## Information
+- Contributor:
+  - Wen Hong
+  - Wei Jie
+  - Nikhil
+  - [Yong106](https://github.com/Yong106)
+  - Ryan
+  - Allen
+- Shout out to _Yong106_ for providing JavaScript scripts for data insertion.
