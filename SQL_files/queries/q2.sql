@@ -10,7 +10,7 @@ WITH Business(SingaporeBusiness, LABusiness) AS (
         ON oi.warehouseID = w.warehouseID
     INNER JOIN PurchaseOrder po
         ON oi.orderID = po.orderID
-    WHERE po.status IN ('confirmed', 'partially recieved', 'fully received')
+    WHERE po.status IN ('confirmed', 'partially received', 'fully received')
 )
 SELECT 
     SingaporeBusiness,

@@ -19,7 +19,7 @@ WITH Business AS (
     FROM OrderItem i
     INNER JOIN PurchaseOrder o
         ON i.orderID = o.orderID
-    WHERE o.status IN ('confirmed', 'partially recieved', 'fully received')
+    WHERE o.status IN ('confirmed', 'partially received', 'fully received')
     GROUP BY warehouseID, clientID
 ),
 Ranked AS (
