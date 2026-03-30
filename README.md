@@ -12,6 +12,7 @@ This repository contains the materials for the SC2207 Database and SQL course la
 ## Information
 - Contributor:
   - Wen Hong
+  - Weijie
   - Nikhil
   - [Yong106](https://github.com/Yong106)
   - Ryan
