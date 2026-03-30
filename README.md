@@ -13,7 +13,7 @@ This repository contains the materials for the SC2207 Database and SQL course la
 - Contributor:
   - Wen Hong
   - Nikhil
-  - Yong
+  - [Yong106](https://github.com/Yong106)
   - Ryan
   - Allen
 - Shout out to **[Yong106](https://github.com/Yong106)** for providing JavaScript scripts for data insertion.
