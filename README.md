@@ -1,11 +1,11 @@
-# SC2207 Database and SQL
+# SC2207 Database
 
 This repository contains the materials for the SC2207 Database and SQL course lab.
 
 ---
 
 ## Details
-- **Course Code**: SC2207
+- **Course Code**: SC2207 Introduction to Database
 - **SQL version**: T-SQL
 - **Database Engine**: MSSQL (Azure Data Studio)
 
